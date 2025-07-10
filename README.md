@@ -4,6 +4,11 @@ Thank you Hyrulians for helping me debug this since you all will be the first (f
 
 A Kingdom of Loathing script that is intended to be a low set up script for getting the Hamster from Hodgman. This is mostly original with some inspiration from Grotfang's Hands Free Hamster script. I've also yoinked some lines from a hobopolis script that I can't find anymore and a Forums of Loathing post.
 
+## Installation
+To install this script in KolMafia, simply use the following command in the gCLI:
+
+`git checkout Astro3207/Hamster`
+
 ## What will I need to run it?
 I've tried to keep the requirements as minimal as possible. You have the option to have outfits, custom combat script (ccs), or moods named sewers (no mood and only if you choose to go Lucky!), boots, eyes, guts, skulls, crotches, skins. If you lack the outfits then the script runs a modifier maximum best for the situation. If you don't have a ccs for the respective body parts, the script will fall back on the 120MP hobopolis skills. There will be no mood set if you didn't make one. You will also need sufficient stats to do all of this of course. So basically if you have nothing set up to your preference __you only need the Hobopolis skills, if your stats are not sufficient to collect the parts, I would reccommend creating your own outfit, ccs, and mood__.
   >Note about moods: seems like the function isn't well fleshed out in Mafia, so it will make a mood named boots for example, but there will be nothing in it, you will have to delete it each time if you don't want to clog up your moods.
