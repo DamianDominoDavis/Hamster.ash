@@ -1080,7 +1080,7 @@ repeat{
                 set_property ("tent_stage", "finished");
             }
         } else {
-            while (tent_open() == false) {
+            while (tent_open() == false || mapimage() < 25) {
                 print("Waiting for tent to open");
                 wait (10);
             }
