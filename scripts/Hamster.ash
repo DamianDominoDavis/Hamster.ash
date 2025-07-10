@@ -1,3 +1,5 @@
+cli_execute ("git update hamster"); //This is only temporary until I debug with my clan
+
 void main (string sender , string message, string channel){
    if (channel == "/hobopolis"){
       print("message is "+message);
