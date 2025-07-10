@@ -2,7 +2,7 @@
 
 Thank you Hyrulians for helping me debug this since you all will be the first (few) hamster runs to be testing this script. I am not a coder and I script occasionally and never for a co-op script like this, so I expect there to be a lot of bugs because of course there is going to be.
 
-Made in consultation with Quickbaby. As they've suggested I may break up this script so that it's less automated (spirit of collaboration!)
+Made in consultation with Quickbaby. As they've suggested I may break up this script so that it's less automated (wouldn't want the ban hammer to come down). For now I'd still want to run the full thing 1-2 times as a debugging session before breaking it up.
 
 A Kingdom of Loathing script that is intended to be a low set up script for getting the Hamster from Hodgman. This is mostly original with some inspiration from Grotfang's Hands Free Hamster script. I've also yoinked some lines from a hobopolis script that I can't find anymore and a Forums of Loathing post.
 
