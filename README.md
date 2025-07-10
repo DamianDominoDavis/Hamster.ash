@@ -11,7 +11,7 @@ To install this script in KolMafia, simply use the following command in the gCLI
 
 ## What will I need to run it?
 I've tried to keep the requirements as minimal as possible. You have the option to have outfits, custom combat script (ccs), or moods named sewers (no mood and only if you choose to go Lucky!), boots, eyes, guts, skulls, crotches, skins. If you lack the outfits then the script runs a modifier maximum best for the situation. If you don't have a ccs for the respective body parts, the script will fall back on the 120MP hobopolis skills. There will be no mood set if you didn't make one. You will also need sufficient stats to do all of this of course. So basically if you have nothing set up to your preference __you only need the Hobopolis skills, if your stats are not sufficient to collect the parts, I would reccommend creating your own outfit, ccs, and mood__.
-  >Note about moods: seems like the function isn't well fleshed out in Mafia, so it will make a mood named boots for example, but there will be nothing in it, you will have to delete it each time if you don't want to clog up your moods.
+  >Note about moods: seems like the function isn't well fleshed out in Mafia, so it will make a mood named boots (for example) if you don't already have it, but there will be nothing in it, you will have to delete it each time if you don't want to clog up your moods.
 
 ## What will this script do?
 - It will first ask you for your role: one of the six body part makers, scarehobo maker, cagebot, and/or mosher.  
