@@ -18,9 +18,9 @@ I've tried to keep the requirements as minimal as possible. You have the option 
 > What is the scarehobo maker? They will making the scarehobos, but also be responsible for collecting the parts one at a time after the initial tent opening. While others will spend 106 adventure collecting parts before the first tent, the scarehobo maker can spend 0 to 320 turns in total collecting body parts, but likely will spend around 160. If the scarehobo maker is spending more than 205 turns collecting parts, it is likely to be over 1100 adventures.  
 
 - It will ask if you want to Lucky! Your way through the sewers, otherwise it will CLEESH and tunnel your way through the sewers. It will also give you the option to finish off with Lucky! when you have 10 or less explorations left. It will first wait for cagebot to get caged. Then it will prioritize opening 9 grates before going down any sewer tunnels. I (and one other person has validated) that 9 to 12 grates opened is optimal, although I could be wrong. Then it'll take the tunnels and switch to Lucky! if desired.  
-- Then the 6 parts collectros will collect 106 body parts.  
+- Then the 6 parts collectors will collect 106 body parts.  
 - Once 106 of each part is collected the scarehobo maker will try to get to town square image 12 (to determine how good your scarehobo RNG is) then move towards image 125. If they ever run out of parts the script will make more, but only 1 kill at a time until tent is open.  
-- Once tent is open each person will CLEESH until tent and then say into chat that they are "tented".  
+- Once tent is open each person will CLEESH until tent and then say into Hobopolis clan chat that they are "tented".  
 - Once 7 people has said that, people will get on stage and say "staged".   
 - Once 6 people has said staged, mosher will mosh and say "moshed".  
 - When 6 people say "off stage" the scarehobo maker will continue. This repeats for 6 more moshes. Before tent 8 is open, the scarehobo maker will instead use scarehobos as they are prepared (before this the -script will save scarehobos for the next mosh as necessary).  
@@ -40,5 +40,5 @@ I've tried to keep the requirements as minimal as possible. You have the option 
   - Optimize your setup to make sure you can get the parts (definitely will not be adding this because I am no good at this, but if someone wants to take a stab at it they can)
   - Does not use sneaks, free kills, and free runaways (except snokebomb)
 
-For people not running the script:
+## For people not running the script:
   Simple all you have to do is your given role. The only specifics are that you should only collect 106 body parts initially and I would not reccomend you being the scarehobo maker. And when you are at tent you must say "tented" (not sure if capitalization matters yet), when you are staged say "staged", when you are moshing say "moshed", when you are off stage say "off stage".
