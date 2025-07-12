@@ -1,27 +1,18 @@
 cli_execute ("git update hamster"); //This is only temporary until I debug with my clan
 
-void main (string sender , string message, string channel){
-   if (channel == "/hobopolis"){
-      print("message is "+message);
-      if (message == "tented"){
-         int people_tented = to_int(get_property("people_tented"));
-         people_tented += 1;
-         set_property("people_tented" , people_tented);
-      }
-      if (message == "staged"){
-         int people_staged = to_int(get_property("people_staged"));
-         people_staged += 1;
-         set_property("people_staged" , people_staged);
-      }
-      if (message == "moshed"){
-         set_property("moshed" , "true");
-      }
-      if (message == "off stage"){
-         int people_unstaged = to_int(get_property("people_unstaged"));
-         people_unstaged += 1;
-         set_property("people_unstaged" , people_unstaged);
-      }
-   }
+int estimated_spelldmg = 0;
+float spelldmgp_value = 0;
+
+void stat_check(){
+    if (estimated_spelldmg < ($monster[normal hobo].monster_hp() + 700) || my_buffedstat($stat[moxie]) < ($monster[normal hobo].monster_attack() + 10) && get_property("IveGotThis") != true){
+        if (estimated_spelldmg < ($monster[normal hobo].monster_hp() + 700)){
+            print ("You are expected to do " + estimated_spelldmg + "damage, while you need to deal " + ($monster[normal hobo].monster_hp() + 700) + "damage to guarentee a hobo part from normal hobos.");
+        }
+        if (my_buffedstat($stat[moxie]) < ($monster[normal hobo].monster_attack() + 10)){
+            print ("You have " + my_buffedstat($stat[moxie]) + "moxie, but you need at least " + ($monster[normal hobo].monster_attack() + 10) + " moxie to safely adventure at town square");
+        }
+    abort("It seems you failed one of the stat checks. Condider creating  mood that boosts spell damage percent, mainstat, or minimizes ML");
+    }
 }
 
 void boots_prep(){
@@ -30,7 +21,10 @@ void boots_prep(){
         if (get_property("parts_collection") != "scarehobo"){
             wait (3);
         }
-        cli_execute("maximize hot spell damage, spell damage percent, -lantern");
+        estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[hot spell damage]));
+        spelldmgp_value = ((((numeric_modifier($modifier[Spell Damage Percent]) + 100 + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[hot spell damage]))) - estimated_spelldmg)/((((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * (my_buffedstat($stat[mysticality])+100)) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[hot spell damage]))) - estimated_spelldmg);
+        cli_execute("maximize 2.8 hot spell damage, " + spelldmgp_value +" spell damage percent, mys, -1000 lantern");
+        spelldmgp_value = ((((numeric_modifier($modifier[Spell Damage Percent]) + 100 + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[hot spell damage]))) - estimated_spelldmg)/((((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * (my_buffedstat($stat[mysticality])+100)) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[hot spell damage]))) - estimated_spelldmg);
     }
     if (have_skill($skill[Flavour of Magic]) == true){
         cli_execute("cast Spirit of Cayenne");
@@ -47,6 +41,7 @@ void boots_prep(){
         }
     }
     set_property("currentMood", "boots");
+    stat_check();
 }
 
 void eyes_prep(){
@@ -55,7 +50,10 @@ void eyes_prep(){
         if (get_property("parts_collection") != "scarehobo"){
             wait (3);
         }
-        cli_execute("maximize cold spell damage, spell damage percent, -lantern");
+        estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[cold spell damage]));
+        spelldmgp_value = ((((numeric_modifier($modifier[Spell Damage Percent]) + 100 + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[cold spell damage]))) - estimated_spelldmg)/((((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * (my_buffedstat($stat[mysticality])+100)) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[cold spell damage]))) - estimated_spelldmg);
+        cli_execute("maximize 2.8 cold spell damage, "+ spelldmgp_value +" spell damage percent, mys, -1000 lantern");
+        spelldmgp_value = ((((numeric_modifier($modifier[Spell Damage Percent]) + 100 + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[cold spell damage]))) - estimated_spelldmg)/((((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * (my_buffedstat($stat[mysticality])+100)) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[cold spell damage]))) - estimated_spelldmg);
     }
     if (have_skill($skill[Flavour of Magic]) == true){
         cli_execute("cast Spirit of Peppermint");
@@ -72,6 +70,7 @@ void eyes_prep(){
         }
     }
     set_property("currentMood", "eyes");
+    stat_check();
 }
 
 void guts_prep(){
@@ -80,7 +79,11 @@ void guts_prep(){
         if (get_property("parts_collection") != "scarehobo"){
             wait (3);
         }
-        cli_execute("maximize stench spell damage, spell damage percent, -lantern");
+        estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[stench spell damage]));
+        spelldmgp_value = ((((numeric_modifier($modifier[Spell Damage Percent]) + 100 + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[stench spell damage]))) - estimated_spelldmg)/((((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * (my_buffedstat($stat[mysticality])+100)) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[stench spell damage]))) - estimated_spelldmg);
+        cli_execute("maximize 2.8 stench spell damage, " + spelldmgp_value + " spell damage percent, mys, -1000 lantern");
+        spelldmgp_value = ((((numeric_modifier($modifier[Spell Damage Percent]) + 100 + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[stench spell damage]))) - estimated_spelldmg)/((((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * (my_buffedstat($stat[mysticality])+100)) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[stench spell damage]))) - estimated_spelldmg);
+
     }
     if (have_skill($skill[Flavour of Magic]) == true){
         cli_execute("cast Spirit of Garlic");
@@ -97,6 +100,7 @@ void guts_prep(){
         }
     }
     set_property("currentMood", "guts");
+    stat_check();
 }
 
 void skulls_prep() {
@@ -105,7 +109,11 @@ void skulls_prep() {
         if (get_property("parts_collection") != "scarehobo"){
             wait (3);
         }
-        cli_execute("maximize spooky spell damage, spell damage percent, -lantern");
+        estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[spooky spell damage]));
+        spelldmgp_value = ((((numeric_modifier($modifier[Spell Damage Percent]) + 100 + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[spooky spell damage]))) - estimated_spelldmg)/((((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * (my_buffedstat($stat[mysticality])+100)) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[spooky spell damage]))) - estimated_spelldmg);
+        cli_execute("maximize 2.8 spooky spell damage, " + spelldmgp_value + " spell damage percent, -lantern");
+        spelldmgp_value = ((((numeric_modifier($modifier[Spell Damage Percent]) + 100 + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[spooky spell damage]))) - estimated_spelldmg)/((((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * (my_buffedstat($stat[mysticality])+100)) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[spooky spell damage]))) - estimated_spelldmg);
+
     }
     if (have_skill($skill[Flavour of Magic]) == true){
         cli_execute("cast Spirit of Wormwood");
@@ -122,6 +130,7 @@ void skulls_prep() {
         }
     }
     set_property("currentMood", "skulls");
+    stat_check();
 }
 
 void crotches_prep(){
@@ -130,7 +139,10 @@ void crotches_prep(){
         if (get_property("parts_collection") != "scarehobo"){
             wait (3);
         }
-        cli_execute("maximize sleaze spell damage, spell damage percent, -lantern");
+        estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[sleaze spell damage]));
+        spelldmgp_value = ((((numeric_modifier($modifier[Spell Damage Percent]) + 100 + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[sleaze spell damage]))) - estimated_spelldmg)/((((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * (my_buffedstat($stat[mysticality])+100)) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[sleaze spell damage]))) - estimated_spelldmg);
+        cli_execute("maximize 2.8 sleaze spell damage, "+ spelldmgp_value + " spell damage percent, mys, -1000 lantern");
+        spelldmgp_value = ((((numeric_modifier($modifier[Spell Damage Percent]) + 100 + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[sleaze spell damage]))) - estimated_spelldmg)/((((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * (my_buffedstat($stat[mysticality])+100)) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[sleaze spell damage]))) - estimated_spelldmg);
     }
     if (have_skill($skill[Flavour of Magic]) == true){
         cli_execute("cast Spirit of Bacon Grease");
@@ -147,6 +159,7 @@ void crotches_prep(){
         }
     }
     set_property("currentMood", "crotches");
+    stat_check();
 }
 
 void skins_prep(){
@@ -155,7 +168,10 @@ void skins_prep(){
         if (get_property("parts_collection") != "scarehobo"){
             wait (3);
         }
-        cli_execute("maximize spell damage percent, -lantern");
+        estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]));
+        spelldmgp_value = ((((numeric_modifier($modifier[Spell Damage Percent]) + 100 + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]))) - estimated_spelldmg)/((((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * (my_buffedstat($stat[mysticality])+100)) + numeric_modifier($modifier[spell damage]))) - estimated_spelldmg);
+        cli_execute("maximize "+ spelldmgp_value + " spell damage percent, mys, -1000 lantern");
+        spelldmgp_value = ((((numeric_modifier($modifier[Spell Damage Percent]) + 100 + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]))) - estimated_spelldmg)/((((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * (my_buffedstat($stat[mysticality])+100)) + numeric_modifier($modifier[spell damage]))) - estimated_spelldmg);
     }
     if (set_ccs("skins") == false){
         print("No custom combat script named skins (capitalization matters), setting auto attack to Toynado", "blue");
@@ -169,6 +185,7 @@ void skins_prep(){
         }
     }
     set_property("currentMood", "skins");
+    stat_check();
 }
 
 string LastAdvTxt() {
@@ -274,7 +291,7 @@ int skins (){
     return skins_count;
 }
 
-buffer b = "if hasskill Spring Away \n skill spring away \n endif \n if hasskill Snokebomb \n skill snokebomb \n endif \n skill cleesh \n attack with weapon";
+buffer b = "if hasskill Spring Away \n skill spring away \n endif \n if hasskill Blow the Green Candle! \n skill Blow the Green Candle \n endif \n if hasskill creepy grin \n skill screepy grin \n endif \n if hasskill feel hatred \n skill feel hatred \n endif \n if hasskill Give Your Opponent the Stinkeye \n skill Give Your Opponent the Stinkeye \n endif \n if hasskill Summon Mayfly Swarm \n skill summon mayfly swarm \n endif \n if hasskill Throw Latte on Opponent \n skill throw latte on opponent \n endif \n if hasskill Snokebomb \n skill snokebomb \n endif \n skill cleesh \n attack with weapon";
 write_ccs( b, "cleesh free runaway" );
 
 if (get_property("initialized") == 1 || get_property("initialized") == ""){
@@ -295,6 +312,7 @@ if (get_property("initialized") == 1 || get_property("initialized") == ""){
             set_property("parts_collection", user_prompt("It appears that you entered an invalid part (no caps) \n boots \n eyes \n guts \n skulls \n crotches \n skins \n scarehobo \n cagebot"));
         } until (get_property("parts_collection") == "boots" || get_property("parts_collection") == "eyes" || get_property("parts_collection") == "guts" || get_property("parts_collection") == "skulls"  || get_property("parts_collection") == "crotches" || get_property("parts_collection") == "skins" || get_property("parts_collection") == "scarehobo" || get_property("parts_collection") == "cagebot");
     }
+    set_property("IveGotThis", "false");
     set_property("adv_checked", "false");
     set_property("people_tented" , "0");
     set_property("people_staged" , "0");
@@ -306,8 +324,8 @@ if (get_property("initialized") == 1 || get_property("initialized") == ""){
     set_property("mpAutoRecovery",0.25);
     set_property("mpAutoRecoveryTarget",0.75);
     set_property("chatbotScriptStorage", get_property("chatbotScript"));
-    set_property("chatbotScript", "Hamster.ash");
-    cli_execute("/s hobopolis");
+    set_property("chatbotScript", "HamsterChat.ash");
+    cli_execute("/switch hobopolis");
     set_property("initialized", 4); //to skip future initializations
 } else if(get_property("initialized") == 2){
     set_property("sewer_progress", 100); //saying that there's 100 chieftans until sewers is cleared
@@ -327,6 +345,8 @@ if (get_property("initialized") == 1 || get_property("initialized") == ""){
     }
     set_property("initialized", 4);
 }
+
+cli_execute("unequip offhand");
 
 if (my_class() == $class[seal clubber]) {
     if (item_amount($item[sealskin drum]) < 1 && get_property("is_mosher") != "true" && get_property("parts_collection") != "cagebot"){
@@ -495,8 +515,8 @@ if ( contains_text( town_map , "clan_hobopolis.php?place=3") ) { //checking if s
             print ("Not enough clovers?", "orange");
             abort ("If you've already cleared some of the sewers manually, type set sewer_progress = how many sewers adventures are left");
         }
-        if (my_buffedstat($stat[moxie]) < 340 && get_property("sewer_fights") != "true") { //340 moxie is how much is needed for safe adventuring in the sewers
-            abort ("Buffed moxie should be at least 340 to guarentee a safe passage. Contact organizers for help. If you are confident in your skillz set sewer_fights = true");
+        if (my_buffedstat($stat[moxie]) < ($monster[C. H. U. M. chieftain].monster_attack() + 10) && get_property("IveGotThis") != "true") {
+            abort ("Buffed moxie should be at least "+ ($monster[C. H. U. M. chieftain].monster_attack() + 10) +" to guarentee a safe passage. Contact organizers for help. If you are confident in your skillz type \"set IveGotThis = true\"");
         }
         if (my_adventures() < 270 && get_property("adv_checked") != "true") { //I'm approximating that 140 adventures are needed for the entire run
             set_property("adv_checked", "true");
@@ -1073,6 +1093,7 @@ repeat{
                     set_auto_attack(0);
                     set_property("currentMood", "boots");
                     if (num_mosh() >= 8 && min(boots(), eyes(), guts(), skulls(), crotches(), skins()) >= 1){
+                        richard;
                         visit_url("clan_hobopolis.php?preaction=simulacrum&place=3&qty="+ min(boots(), eyes(), guts(), skulls(), crotches(), skins()));
                     }
                     if (get_property("_lastCombatLost") == "true"){ //KoL Mafia detected that the last combat was lost so that the script is aborted and a whole bunch of adventures aren't wasted
@@ -1094,5 +1115,5 @@ if (get_property("initialized") != "1"){
     set_property("initialized" ,"1");
     set_property("chatbotScript", get_property("chatbotScriptStorage"));
     set_auto_attack(0);
-    set_property("currentMood", "boots");
+    set_property("currentMood", "apathetic");
 }
