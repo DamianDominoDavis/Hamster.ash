@@ -1,15 +1,13 @@
-cli_execute ("git update hamster"); //This is only temporary until I debug with my clan
-
 int estimated_spelldmg = 0;
 float spelldmgp_value = 0;
 
 void stat_check(){
-    if (estimated_spelldmg < ($monster[normal hobo].monster_hp() + 700) || my_buffedstat($stat[moxie]) < ($monster[normal hobo].monster_attack() + 10) && get_property("IveGotThis") != true){
+    if (estimated_spelldmg < ($monster[normal hobo].monster_hp() + 700) || my_buffedstat($stat[moxie]) < ($monster[normal hobo].monster_attack() + 10) && get_property("IveGotThis") != "true"){
         if (estimated_spelldmg < ($monster[normal hobo].monster_hp() + 700)){
-            print ("You are expected to do " + estimated_spelldmg + "damage, while you need to deal " + ($monster[normal hobo].monster_hp() + 700) + "damage to guarentee a hobo part from normal hobos.");
+            print ("You are expected to do " + estimated_spelldmg + " damage, while you need to deal " + ($monster[normal hobo].monster_hp() + 700) + " damage to guarentee a hobo part from normal hobos.");
         }
         if (my_buffedstat($stat[moxie]) < ($monster[normal hobo].monster_attack() + 10)){
-            print ("You have " + my_buffedstat($stat[moxie]) + "moxie, but you need at least " + ($monster[normal hobo].monster_attack() + 10) + " moxie to safely adventure at town square");
+            print ("You have " + my_buffedstat($stat[moxie]) + " moxie, but you need at least " + ($monster[normal hobo].monster_attack() + 10) + " moxie to safely adventure at town square");
         }
     abort("It seems you failed one of the stat checks. Condider creating  mood that boosts spell damage percent, mainstat, or minimizes ML");
     }
@@ -24,7 +22,7 @@ void boots_prep(){
         estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[hot spell damage]));
         spelldmgp_value = ((((numeric_modifier($modifier[Spell Damage Percent]) + 100 + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[hot spell damage]))) - estimated_spelldmg)/((((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * (my_buffedstat($stat[mysticality])+100)) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[hot spell damage]))) - estimated_spelldmg);
         cli_execute("maximize 2.8 hot spell damage, " + spelldmgp_value +" spell damage percent, mys, -1000 lantern");
-        spelldmgp_value = ((((numeric_modifier($modifier[Spell Damage Percent]) + 100 + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[hot spell damage]))) - estimated_spelldmg)/((((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * (my_buffedstat($stat[mysticality])+100)) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[hot spell damage]))) - estimated_spelldmg);
+        estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[hot spell damage]));
     }
     if (have_skill($skill[Flavour of Magic]) == true){
         cli_execute("cast Spirit of Cayenne");
@@ -53,7 +51,7 @@ void eyes_prep(){
         estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[cold spell damage]));
         spelldmgp_value = ((((numeric_modifier($modifier[Spell Damage Percent]) + 100 + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[cold spell damage]))) - estimated_spelldmg)/((((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * (my_buffedstat($stat[mysticality])+100)) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[cold spell damage]))) - estimated_spelldmg);
         cli_execute("maximize 2.8 cold spell damage, "+ spelldmgp_value +" spell damage percent, mys, -1000 lantern");
-        spelldmgp_value = ((((numeric_modifier($modifier[Spell Damage Percent]) + 100 + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[cold spell damage]))) - estimated_spelldmg)/((((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * (my_buffedstat($stat[mysticality])+100)) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[cold spell damage]))) - estimated_spelldmg);
+        estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[cold spell damage]));
     }
     if (have_skill($skill[Flavour of Magic]) == true){
         cli_execute("cast Spirit of Peppermint");
@@ -82,8 +80,7 @@ void guts_prep(){
         estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[stench spell damage]));
         spelldmgp_value = ((((numeric_modifier($modifier[Spell Damage Percent]) + 100 + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[stench spell damage]))) - estimated_spelldmg)/((((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * (my_buffedstat($stat[mysticality])+100)) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[stench spell damage]))) - estimated_spelldmg);
         cli_execute("maximize 2.8 stench spell damage, " + spelldmgp_value + " spell damage percent, mys, -1000 lantern");
-        spelldmgp_value = ((((numeric_modifier($modifier[Spell Damage Percent]) + 100 + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[stench spell damage]))) - estimated_spelldmg)/((((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * (my_buffedstat($stat[mysticality])+100)) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[stench spell damage]))) - estimated_spelldmg);
-
+        estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[stench spell damage]));
     }
     if (have_skill($skill[Flavour of Magic]) == true){
         cli_execute("cast Spirit of Garlic");
@@ -112,8 +109,7 @@ void skulls_prep() {
         estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[spooky spell damage]));
         spelldmgp_value = ((((numeric_modifier($modifier[Spell Damage Percent]) + 100 + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[spooky spell damage]))) - estimated_spelldmg)/((((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * (my_buffedstat($stat[mysticality])+100)) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[spooky spell damage]))) - estimated_spelldmg);
         cli_execute("maximize 2.8 spooky spell damage, " + spelldmgp_value + " spell damage percent, -lantern");
-        spelldmgp_value = ((((numeric_modifier($modifier[Spell Damage Percent]) + 100 + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[spooky spell damage]))) - estimated_spelldmg)/((((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * (my_buffedstat($stat[mysticality])+100)) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[spooky spell damage]))) - estimated_spelldmg);
-
+        estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[spooky spell damage]));
     }
     if (have_skill($skill[Flavour of Magic]) == true){
         cli_execute("cast Spirit of Wormwood");
@@ -142,7 +138,7 @@ void crotches_prep(){
         estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[sleaze spell damage]));
         spelldmgp_value = ((((numeric_modifier($modifier[Spell Damage Percent]) + 100 + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[sleaze spell damage]))) - estimated_spelldmg)/((((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * (my_buffedstat($stat[mysticality])+100)) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[sleaze spell damage]))) - estimated_spelldmg);
         cli_execute("maximize 2.8 sleaze spell damage, "+ spelldmgp_value + " spell damage percent, mys, -1000 lantern");
-        spelldmgp_value = ((((numeric_modifier($modifier[Spell Damage Percent]) + 100 + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[sleaze spell damage]))) - estimated_spelldmg)/((((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * (my_buffedstat($stat[mysticality])+100)) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[sleaze spell damage]))) - estimated_spelldmg);
+        estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[sleaze spell damage]));
     }
     if (have_skill($skill[Flavour of Magic]) == true){
         cli_execute("cast Spirit of Bacon Grease");
@@ -171,7 +167,7 @@ void skins_prep(){
         estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]));
         spelldmgp_value = ((((numeric_modifier($modifier[Spell Damage Percent]) + 100 + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]))) - estimated_spelldmg)/((((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * (my_buffedstat($stat[mysticality])+100)) + numeric_modifier($modifier[spell damage]))) - estimated_spelldmg);
         cli_execute("maximize "+ spelldmgp_value + " spell damage percent, mys, -1000 lantern");
-        spelldmgp_value = ((((numeric_modifier($modifier[Spell Damage Percent]) + 100 + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]))) - estimated_spelldmg)/((((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * (my_buffedstat($stat[mysticality])+100)) + numeric_modifier($modifier[spell damage]))) - estimated_spelldmg);
+        estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]));
     }
     if (set_ccs("skins") == false){
         print("No custom combat script named skins (capitalization matters), setting auto attack to Toynado", "blue");
@@ -387,7 +383,7 @@ if ( contains_text( town_map , "clan_hobopolis.php?place=3") ) { //checking if s
     print ("The Maze of Sewer Tunnels is already clear, skipping sewers", "orange") ;
     set_property("initialized", 2);
 } else {
-    set_property("lucky_sewers", user_confirm("Select yes if you will be using clovers to fight your way through sewers, select no if you will be cleeshing enemies and using ladders only"));
+    set_property("lucky_sewers", user_confirm("Select yes if you will be using clovers to fight your way through sewers, select no if you will be (mostly) cleeshing enemies and using ladders"));
     if (get_property("lucky_sewers") == "false"){
         set_property("HalfnHalf", user_confirm("Select yes if when there is 10 or less explorations left, you want to finish sewers with clovers"));
         set_ccs ("cleesh free runaway");
@@ -413,15 +409,7 @@ if ( contains_text( town_map , "clan_hobopolis.php?place=3") ) { //checking if s
                 }
             } until (last_choice() == 211 || last_choice() == 212);
         }
-        matcher someone_caged = create_matcher("stared at an empty cage for a while", rlogs);
-        repeat {
-            rlogs = visit_url("clan_raidlogs.php");
-            print("waiting for cagebot");
-            wait (5);
-            if(contains_text (rlogs, "stared at an empty cage for a while") == true){
-                break;
-            }
-        } until (contains_text (rlogs, "stared at an empty cage for a while") == true);
+        user_confirm("Press yes when you know cagebot is caged");
         set_property("choiceAdventure198", 1);
         set_property("choiceAdventure199", 1);
         set_property("choiceAdventure197", 1);
@@ -452,50 +440,53 @@ if ( contains_text( town_map , "clan_hobopolis.php?place=3") ) { //checking if s
                 cli_execute("equip gatorskin umbrella");
                 cli_execute("equip hobo code binder");
             }
-            string visit_sewers = visit_url("clan_hobopolis.php?place=1");
-            if (contains_text(visit_sewers, "Round 1")){
-                run_combat();
-            } else {
-                run_choice(-1);
-                if (contains_text(visit_sewers, "You head down the 'shortcut' tunnel.")){
+            string visit_sewers = visit_url("adventure.php?snarfblat=166");
+            int sewer_choice = 0;
+            matcher matcher_sewer_choice = create_matcher("whichchoice value=(\\d+)", visit_sewers);
+            if (matcher_sewer_choice.find() && get_property("choiceAdventure198") == "1"){
+                sewer_choice += matcher_sewer_choice.group(1);
+                string sewer_noncom = visit_url("choice.php?whichchoice="+ sewer_choice +"&option=1");
+                if (contains_text(sewer_noncom, "You head down the 'shortcut' tunnel.")){
                     sewer_progress -= 1;
                     set_property("sewer_progress", sewer_progress);
                 }
-                if (contains_text(visit_sewers, "This ladder just goes in a big circle.")){
+                if (contains_text(sewer_noncom, "This ladder just goes in a big circle.")){
                     sewer_progress -= 3;
                     set_property("sewer_progress", sewer_progress);
                 }
-                if (contains_text(visit_sewers, "You head toward the Egress.")){
+                if (contains_text(sewer_noncom, "You head toward the Egress.")){
                     sewer_progress -= 5;
                     set_property("sewer_progress", sewer_progress);
                 }
-                if (contains_text(visit_sewers, "These will indubitably satisfy my refined appetite. Merci Beaucoup, old chap! Pip pip!")){
+                if (contains_text(sewer_noncom, "These will indubitably satisfy my refined appetite")){
                     sewer_progress -= 1;
                     set_property("sewer_progress", sewer_progress);
                 }
-                if (contains_text(visit_sewers, "He grabs the wad and runs away")){
+                if (contains_text(sewer_noncom, "He grabs the wad and runs away")){
                     sewer_progress -= 1;
                     set_property("sewer_progress", sewer_progress);
                 }
-                if (contains_text(visit_sewers, "He finds a bottle of Ooze-O")){
+                if (contains_text(sewer_noncom, "He finds a bottle of Ooze-O")){
                     sewer_progress -= 1;
                     set_property("sewer_progress", sewer_progress);
                 }
-                if (contains_text(visit_sewers, "you douse yourself with oil of oiliness")){
+                if (contains_text(sewer_noncom, "you douse yourself with oil of oiliness")){
                     sewer_progress -= 1;
                     set_property("sewer_progress", sewer_progress);
                 }
-                if (contains_text(visit_sewers, "your gatorskin umbrella allows you to pass beneath the sewagefall without incident")){
+                if (contains_text(sewer_noncom, "your gatorskin umbrella allows you to pass beneath the sewagefall without incident")){
                     sewer_progress -= 1;
                     set_property("sewer_progress", sewer_progress);
                 }
-                if (contains_text(visit_sewers, "looks like somebody else opened this grate from the other side")){
+                if (contains_text(sewer_noncom, "looks like somebody else opened this grate from the other side")){
                     sewer_progress -= 5;
                     set_property("sewer_progress", sewer_progress);
                 }
-                if(get_property("choiceAdventure198") == "3"){
-                    run_combat();
-                }
+            } else if (contains_text(visit_sewers, "Round 1")){
+                run_combat();
+            } else {
+                run_choice(-1);
+            run_combat();
             }
             if (get_property("_lastCombatLost") == "true"){ //KoL Mafia detected that the last combat was lost so that the script is aborted and a whole bunch of adventures aren't wasted
                 abort ("It appears you lost the last combat, look into that");
@@ -507,7 +498,7 @@ if ( contains_text( town_map , "clan_hobopolis.php?place=3") ) { //checking if s
             }
         } until (get_property("lastEncounter") == "At Last!");
     }
-        if (get_property("lucky_sewers") == "true"){
+    if (get_property("lucky_sewers") == "true"){
         if (get_property("parts_collection") == "cagebot"){
             abort("There's no point in doing lucky while being a cagebot? To reset your role (ie mosher or cagebot) type \"set initialized = 3\"");
         }
@@ -565,7 +556,7 @@ if (mapimage() <= 6) { //phase 1 collect 106 hobo parts
         while (boots() < 106) {
             adventure(1, $location[Hobopolis Town Square] );
             if (get_property("_lastCombatLost") == "true"){ //KoL Mafia detected that the last combat was lost so that the script is aborted and a whole bunch of adventures aren't wasted
-                    abort ("It appears you lost the last combat, look into that");
+                abort ("It appears you lost the last combat, look into that");
             }
             if (!contains_text(LastAdvTxt(), "Richard takes a charred hobo boots")){
                 abort ("Richard failed to get boots, look into that");
@@ -580,7 +571,7 @@ if (mapimage() <= 6) { //phase 1 collect 106 hobo parts
         while (eyes() < 106){
             adventure(1, $location[Hobopolis Town Square] );
             if (get_property("_lastCombatLost") == "true"){ //KoL Mafia detected that the last combat was lost so that the script is aborted and a whole bunch of adventures aren't wasted
-                    abort ("It appears you lost the last combat, look into that");
+                abort ("It appears you lost the last combat, look into that");
             }
             if (!contains_text(LastAdvTxt(), "Richard takes a frozen hobo eyeballs")){
                 abort ("Richard failed to get eyes, look into that");
@@ -595,7 +586,7 @@ if (mapimage() <= 6) { //phase 1 collect 106 hobo parts
         while (guts() < 106){
             adventure(1, $location[Hobopolis Town Square] );
             if (get_property("_lastCombatLost") == "true"){ //KoL Mafia detected that the last combat was lost so that the script is aborted and a whole bunch of adventures aren't wasted
-                    abort ("It appears you lost the last combat, look into that");
+                abort ("It appears you lost the last combat, look into that");
             }
             if (!contains_text(LastAdvTxt(), "Richard takes a stinking hobo guts")){
                 abort ("Richard failed to get guts, look into that");
@@ -610,7 +601,7 @@ if (mapimage() <= 6) { //phase 1 collect 106 hobo parts
         while (skulls() < 106){
             adventure(1, $location[Hobopolis Town Square] );
             if (get_property("_lastCombatLost") == "true"){ //KoL Mafia detected that the last combat was lost so that the script is aborted and a whole bunch of adventures aren't wasted
-                    abort ("It appears you lost the last combat, look into that");
+                abort ("It appears you lost the last combat, look into that");
             }
             if (!contains_text(LastAdvTxt(), "Richard takes a creepy hobo skull")){
                 abort ("Richard failed to get skull, look into that");
@@ -625,7 +616,7 @@ if (mapimage() <= 6) { //phase 1 collect 106 hobo parts
         while(crotches() < 106){
             adventure(1, $location[Hobopolis Town Square] );
             if (get_property("_lastCombatLost") == "true"){ //KoL Mafia detected that the last combat was lost so that the script is aborted and a whole bunch of adventures aren't wasted
-                    abort ("It appears you lost the last combat, look into that");
+                abort ("It appears you lost the last combat, look into that");
             }
             if (!contains_text(LastAdvTxt(), "Richard takes a hobo crotch")){
                 abort ("Richard failed to get crotches, look into that");
@@ -640,7 +631,7 @@ if (mapimage() <= 6) { //phase 1 collect 106 hobo parts
         while (skins() < 106){
             adventure(1, $location[Hobopolis Town Square] );
             if (get_property("_lastCombatLost") == "true"){ //KoL Mafia detected that the last combat was lost so that the script is aborted and a whole bunch of adventures aren't wasted
-                    abort ("It appears you lost the last combat, look into that");
+                abort ("It appears you lost the last combat, look into that");
             }
             if (!contains_text(LastAdvTxt(), "Richard takes a hobo skin")){
                 abort ("Richard failed to get skins, look into that");
