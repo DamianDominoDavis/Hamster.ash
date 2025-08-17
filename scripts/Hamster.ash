@@ -2,14 +2,14 @@ int estimated_spelldmg = 0;
 float spelldmgp_value = 0;
 
 void stat_check(){
-    if (estimated_spelldmg < ($monster[normal hobo].monster_hp() + 700) || my_buffedstat($stat[moxie]) < ($monster[normal hobo].monster_attack() + 10) && get_property("IveGotThis") != "true"){
-        if (estimated_spelldmg < ($monster[normal hobo].monster_hp() + 700)){
-            print ("You are expected to do " + estimated_spelldmg + " damage, while you need to deal " + ($monster[normal hobo].monster_hp() + 700) + " damage to guarentee a hobo part from normal hobos.");
+    if (estimated_spelldmg < ($monster[normal hobo].monster_hp() + 100) || my_buffedstat($stat[moxie]) < ($monster[normal hobo].monster_attack() + 10) && get_property("IveGotThis") != "true"){
+        if (estimated_spelldmg < ($monster[normal hobo].monster_hp() + 100)){
+            print ("You are expected to do " + estimated_spelldmg + " damage, while you need to deal " + ($monster[normal hobo].monster_hp() + 100) + " damage to guarentee a hobo part from normal hobos.");
         }
         if (my_buffedstat($stat[moxie]) < ($monster[normal hobo].monster_attack() + 10)){
             print ("You have " + my_buffedstat($stat[moxie]) + " moxie, but you need at least " + ($monster[normal hobo].monster_attack() + 10) + " moxie to safely adventure at town square");
         }
-    abort("It seems you failed one of the stat checks. Condider creating  mood that boosts spell damage percent, mainstat, or minimizes ML");
+        abort("It seems you failed one of the stat checks. Condider creating  mood that boosts spell damage percent, mainstat, or minimizes ML");
     }
 }
 
@@ -22,7 +22,7 @@ void boots_prep(){
         estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[hot spell damage]));
         spelldmgp_value = ((((numeric_modifier($modifier[Spell Damage Percent]) + 100 + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[hot spell damage]))) - estimated_spelldmg)/((((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * (my_buffedstat($stat[mysticality])+100)) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[hot spell damage]))) - estimated_spelldmg);
         cli_execute("maximize 2.8 hot spell damage, " + spelldmgp_value +" spell damage percent, mys, -1000 lantern");
-        estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[hot spell damage]));
+        estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[hot spell damage])) * max(0.50,(1-(numeric_modifier($modifier[monster level])*0.004)));
     }
     if (have_skill($skill[Flavour of Magic]) == true){
         cli_execute("cast Spirit of Cayenne");
@@ -51,7 +51,7 @@ void eyes_prep(){
         estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[cold spell damage]));
         spelldmgp_value = ((((numeric_modifier($modifier[Spell Damage Percent]) + 100 + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[cold spell damage]))) - estimated_spelldmg)/((((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * (my_buffedstat($stat[mysticality])+100)) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[cold spell damage]))) - estimated_spelldmg);
         cli_execute("maximize 2.8 cold spell damage, "+ spelldmgp_value +" spell damage percent, mys, -1000 lantern");
-        estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[cold spell damage]));
+        estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[cold spell damage])) * max(0.50,(1-(numeric_modifier($modifier[monster level])*0.004)));
     }
     if (have_skill($skill[Flavour of Magic]) == true){
         cli_execute("cast Spirit of Peppermint");
@@ -80,7 +80,7 @@ void guts_prep(){
         estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[stench spell damage]));
         spelldmgp_value = ((((numeric_modifier($modifier[Spell Damage Percent]) + 100 + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[stench spell damage]))) - estimated_spelldmg)/((((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * (my_buffedstat($stat[mysticality])+100)) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[stench spell damage]))) - estimated_spelldmg);
         cli_execute("maximize 2.8 stench spell damage, " + spelldmgp_value + " spell damage percent, mys, -1000 lantern");
-        estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[stench spell damage]));
+        estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[stench spell damage])) * max(0.50,(1-(numeric_modifier($modifier[monster level])*0.004)));
     }
     if (have_skill($skill[Flavour of Magic]) == true){
         cli_execute("cast Spirit of Garlic");
@@ -109,7 +109,7 @@ void skulls_prep() {
         estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[spooky spell damage]));
         spelldmgp_value = ((((numeric_modifier($modifier[Spell Damage Percent]) + 100 + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[spooky spell damage]))) - estimated_spelldmg)/((((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * (my_buffedstat($stat[mysticality])+100)) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[spooky spell damage]))) - estimated_spelldmg);
         cli_execute("maximize 2.8 spooky spell damage, " + spelldmgp_value + " spell damage percent, -lantern");
-        estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[spooky spell damage]));
+        estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[spooky spell damage])) * max(0.50,(1-(numeric_modifier($modifier[monster level])*0.004)));
     }
     if (have_skill($skill[Flavour of Magic]) == true){
         cli_execute("cast Spirit of Wormwood");
@@ -138,7 +138,7 @@ void crotches_prep(){
         estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[sleaze spell damage]));
         spelldmgp_value = ((((numeric_modifier($modifier[Spell Damage Percent]) + 100 + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[sleaze spell damage]))) - estimated_spelldmg)/((((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * (my_buffedstat($stat[mysticality])+100)) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[sleaze spell damage]))) - estimated_spelldmg);
         cli_execute("maximize 2.8 sleaze spell damage, "+ spelldmgp_value + " spell damage percent, mys, -1000 lantern");
-        estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[sleaze spell damage]));
+        estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[sleaze spell damage])) * max(0.50,(1-(numeric_modifier($modifier[monster level])*0.004)));
     }
     if (have_skill($skill[Flavour of Magic]) == true){
         cli_execute("cast Spirit of Bacon Grease");
@@ -167,7 +167,7 @@ void skins_prep(){
         estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]));
         spelldmgp_value = ((((numeric_modifier($modifier[Spell Damage Percent]) + 100 + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]))) - estimated_spelldmg)/((((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * (my_buffedstat($stat[mysticality])+100)) + numeric_modifier($modifier[spell damage]))) - estimated_spelldmg);
         cli_execute("maximize "+ spelldmgp_value + " spell damage percent, mys, -1000 lantern");
-        estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]));
+        estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage])) * max(0.50,(1-(numeric_modifier($modifier[monster level])*0.004)));
     }
     if (set_ccs("skins") == false){
         print("No custom combat script named skins (capitalization matters), setting auto attack to Toynado", "blue");
