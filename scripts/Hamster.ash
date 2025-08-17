@@ -428,7 +428,7 @@ if ( contains_text( town_map , "clan_hobopolis.php?place=3") ) { //checking if s
             int sewer_choice = 0;
             matcher matcher_sewer_choice = create_matcher("whichchoice value=(\\d+)", visit_sewers);
             if (matcher_sewer_choice.find() && get_property("choiceAdventure198") == "1"){
-                sewer_choice += matcher_sewer_choice.group(1);
+                sewer_choice += to_int(matcher_sewer_choice.group(1));
                 string sewer_noncom = visit_url("choice.php?whichchoice="+ sewer_choice +"&option=1");
                 if (contains_text(sewer_noncom, "You head down the 'shortcut' tunnel.")){
                     sewer_progress -= 1;
