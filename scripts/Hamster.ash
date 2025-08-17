@@ -296,17 +296,9 @@ if (get_property("initialized") == 1 || get_property("initialized") == ""){
         abort();
     }
     set_property("is_mosher", user_confirm("Are you the mosher?"));
-    set_property("parts_collection", user_prompt("What part will you be collecting (no caps)? \n boots \n eyes \n guts \n skulls \n crotches \n skins \n scarehobo \n cagebot"));
+    set_property("parts_collection", user_prompt("What part will you be collecting?", string[string]{"1. Boots":"boots", "2. Eyes":"eyes", "3. Guts":"guts", "4. Skulls":"skulls", "5. Crotches":"crotches", "6. Skins":"skins", "7. Scarehobo":"scarehobo", "8. Cagebot":"cagebot"}));
     if (get_property("parts_collection") == ""){
         abort();
-    }
-    if (get_property("parts_collection") != "boots" && get_property("parts_collection") != "eyes" && get_property("parts_collection") != "guts" && get_property("parts_collection") != "skulls"  && get_property("parts_collection") != "crotches" && get_property("parts_collection") != "skins" && get_property("parts_collection") != "scarehobo" && get_property("parts_collection") != "cagebot"){
-        repeat{
-            if (get_property("parts_collection") == ""){
-                abort();
-            }
-            set_property("parts_collection", user_prompt("It appears that you entered an invalid part (no caps) \n boots \n eyes \n guts \n skulls \n crotches \n skins \n scarehobo \n cagebot"));
-        } until (get_property("parts_collection") == "boots" || get_property("parts_collection") == "eyes" || get_property("parts_collection") == "guts" || get_property("parts_collection") == "skulls"  || get_property("parts_collection") == "crotches" || get_property("parts_collection") == "skins" || get_property("parts_collection") == "scarehobo" || get_property("parts_collection") == "cagebot");
     }
     set_property("IveGotThis", "false");
     set_property("adv_checked", "false");
@@ -327,17 +319,9 @@ if (get_property("initialized") == 1 || get_property("initialized") == ""){
     set_property("sewer_progress", 100); //saying that there's 100 chieftans until sewers is cleared
 } else if(get_property("initialized") == 3){
     set_property("is_mosher", user_confirm("Are you the mosher?"));
-    set_property("parts_collection", user_prompt("What part will you be collecting (no caps)? \n boots \n eyes \n guts \n skulls \n crotches \n skins \n scarehobo \n cagebot"));
+    set_property("parts_collection", user_prompt("What part will you be collecting?", string[string]{"1. Boots":"boots", "2. Eyes":"eyes", "3. Guts":"guts", "4. Skulls":"skulls", "5. Crotches":"crotches", "6. Skins":"skins", "7. Scarehobo":"scarehobo", "8. Cagebot":"cagebot"}));
     if (get_property("parts_collection") == ""){
         abort();
-    }
-    if (get_property("parts_collection") != "boots" && get_property("parts_collection") != "eyes" && get_property("parts_collection") != "guts" && get_property("parts_collection") != "skulls"  && get_property("parts_collection") != "crotches" && get_property("parts_collection") != "skins" && get_property("parts_collection") != "scarehobo" && get_property("parts_collection") != "cagebot"){
-        repeat{
-            if (get_property("parts_collection") == ""){
-                abort();
-            }
-            set_property("parts_collection", user_prompt("It appears that you entered an invalid part (no caps) \n boots \n eyes \n guts \n skulls \n crotches \n skins \n scarehobo \n cagebot"));
-        } until (get_property("parts_collection") == "boots" || get_property("parts_collection") == "eyes" || get_property("parts_collection") == "guts" || get_property("parts_collection") == "skulls"  || get_property("parts_collection") == "crotches" || get_property("parts_collection") == "skins" || get_property("parts_collection") == "scarehobo" || get_property("parts_collection") == "cagebot");
     }
     set_property("initialized", 4);
 }
