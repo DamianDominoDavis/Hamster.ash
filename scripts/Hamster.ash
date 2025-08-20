@@ -955,13 +955,13 @@ repeat{
                     wait(10);
                 }
                 run_choice(1);
-                cli_execute("/hobopolis offstage");
+                cli_execute("/hobopolis off stage");
             }
             if(get_property("is_mosher") == "true"){
                 while (to_int(get_property("people_staged")) < 6 ){
                     print("At tent, waiting until everyone is staged before moshing", "blue");
                     print("If there is an incorrect count on the number of people staged, type \"set people_staged = #\"", "blue");
-                    wait(10);
+                    wait(5);
                 }
                 run_choice(2);
                 run_choice(2);
