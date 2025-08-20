@@ -4,12 +4,12 @@ float spelldmgp_value = 0;
 void stat_check(){
     if (estimated_spelldmg < ($monster[normal hobo].monster_hp() + 100) || my_buffedstat($stat[moxie]) < ($monster[normal hobo].monster_attack() + 10) && get_property("IveGotThis") != "true"){
         if (estimated_spelldmg < ($monster[normal hobo].monster_hp() + 100)){
-            print ("You are expected to do " + estimated_spelldmg + " damage, while you need to deal " + ($monster[normal hobo].monster_hp() + 100) + " damage to guarentee a hobo part from normal hobos.");
+            print ("You are expected to do " + estimated_spelldmg + " damage when casting the hobopolis spell, while you need to deal " + ($monster[normal hobo].monster_hp() + 100) + " damage to guarentee a hobo part from normal hobos.");
         }
         if (my_buffedstat($stat[moxie]) < ($monster[normal hobo].monster_attack() + 10)){
             print ("You have " + my_buffedstat($stat[moxie]) + " moxie, but you need at least " + ($monster[normal hobo].monster_attack() + 10) + " moxie to safely adventure at town square");
         }
-        abort("It seems you failed one of the stat checks. Condider creating  mood that boosts spell damage percent, mainstat, or minimizes ML");
+        abort("It seems you failed one of the stat checks. Condider creating mood that boosts spell damage percent, mainstat, or minimizes ML. If you would like to skip this safety check type \"IveGotThis = true\", but I wouldn't reccomend it TBH");
     }
 }
 
@@ -374,8 +374,13 @@ if ( contains_text( town_map , "clan_hobopolis.php?place=3") ) { //checking if s
     if (get_property("lucky_sewers") == "false"){
         set_property("HalfnHalf", user_confirm("Select yes if when there is 10 or less explorations left, you want to finish sewers with clovers"));
         set_ccs ("cleesh free runaway");
-        cli_execute("maximize -combat");
+        if (have_familiar($familiar[peace turkey])){
+            use_familiar ($familiar[peace turkey]);
+        } else if (have_familiar($familiar[disgeist])){
+            use_familiar($familiar[disgeist]);
+        }
         if (get_property("parts_collection") == "cagebot"){
+            cli_execute("maximize -combat");
             if(contains_text (rlogs, "stared at an empty cage for a while") == true){
                 abort("someone else is already caged");
             }
@@ -402,11 +407,6 @@ if ( contains_text( town_map , "clan_hobopolis.php?place=3") ) { //checking if s
         set_property("choiceAdventure198", 1);
         set_property("choiceAdventure199", 1);
         set_property("choiceAdventure197", 1);
-        if (have_familiar($familiar[peace turkey])){
-            use_familiar ($familiar[peace turkey]);
-        } else if (have_familiar($familiar[disgeist])){
-            use_familiar($familiar[disgeist]);
-        }
         cli_execute("maximize -combat -off-hand -weapon; equip hobo code binder");
         print("Combat rate achieved: " + numeric_modifier("combat rate"));
         repeat{
@@ -482,7 +482,7 @@ if ( contains_text( town_map , "clan_hobopolis.php?place=3") ) { //checking if s
                 run_combat();
             } else {
                 run_choice(-1);
-            run_combat();
+                run_combat();
             }
             if (get_property("_lastCombatLost") == "true"){ //KoL Mafia detected that the last combat was lost so that the script is aborted and a whole bunch of adventures aren't wasted
                 abort ("It appears you lost the last combat, look into that");
@@ -643,7 +643,7 @@ if (mapimage() <= 6) { //phase 1 collect 106 hobo parts
     }
     set_property("battleAction", "custom combat script");
     set_property("currentMood", "apathetic");
-    while (boots() < 106 && eyes() < 106 && guts() < 106 && skulls() < 106 && crotches() < 106 && skins() < 106){
+    while (boots() < 106 && eyes() < 106 && guts() < 106 && skulls() < 106 && crotches() < 106 && skins() < 106 && mapimage() <= 6){
         if (boots() < 106){
             int boots_left = 106 - boots();
             print("Looks we are short " + boots_left + " boots");
@@ -670,7 +670,7 @@ if (mapimage() <= 6) { //phase 1 collect 106 hobo parts
         }
         print("Not all parts have been collected, waiting");
         wait(5);
-        if (boots() >= 106 && eyes() >= 106 && guts() >= 106 && skulls() >= 106 && crotches() >= 106 && skins() >= 106){
+        if (boots() >= 106 && eyes() >= 106 && guts() >= 106 && skulls() >= 106 && crotches() >= 106 && skins() >= 106 && mapimage() <= 6){
             break;
         }
     }
@@ -890,10 +890,10 @@ if (have_familiar($familiar[peace turkey])){
 }
 cli_execute("maximize -combat -off-hand");
 print("Combat rate achieved: " + numeric_modifier("combat rate"));
-start_adv = my_adventures();
 
 repeat{
     if (tent_open() == true){
+        start_adv = my_adventures();
         if (my_class() == $class[seal clubber] && get_property("is_mosher") != "true") {
             if (equipped_item($slot[off-hand]) != $item[sealskin drum]);
             set_ccs ("cleesh free runaway");
