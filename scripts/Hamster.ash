@@ -35,7 +35,7 @@ void boots_prep(){
         if (have_skill($skill[Awesome Balls of Fire]) == false){
             abort("Missing skill Awesome Balls of Fire, please set a ccs named boots");
         } else {
-            set_auto_attack(0028);
+            set_property("battleAction", "Awesome Balls of Fire");
         }
     }
     set_property("currentMood", "boots");
@@ -64,7 +64,7 @@ void eyes_prep(){
         if (have_skill($skill[Snowclone]) == false){
             abort("Missing skill Snowclone, please set a ccs named eyes");
         } else {
-            set_auto_attack(0030);
+            set_property("battleAction", "skill snowlcone");
         }
     }
     set_property("currentMood", "eyes");
@@ -93,7 +93,7 @@ void guts_prep(){
         if (have_skill($skill[Eggsplosion]) == false){
             abort("Missing skill Eggsplosion, please set a ccs named guts");
         } else {
-            set_auto_attack(0032);
+            set_property("battleAction", "skill Eggsplosion");
         }
     }
     set_property("currentMood", "guts");
@@ -122,7 +122,7 @@ void skulls_prep() {
         if (have_skill($skill[Raise Backup Dancer]) == false){
             abort("Missing skill Raise Backup Dancer, please set a ccs named skulls");
         } else {
-            set_auto_attack(0042);
+            set_property("battleAction", "Raise Backup Dancer");
         }
     }
     set_property("currentMood", "skulls");
@@ -151,7 +151,7 @@ void crotches_prep(){
         if (have_skill($skill[Grease Lightning]) == false){
             abort("Missing skill Grease Lightning, please set a ccs named crotches");
         } else {
-            set_auto_attack(0036);
+            set_property("battleAction", "Grease Lightning");
         }
     }
     set_property("currentMood", "crotches");
@@ -177,7 +177,7 @@ void skins_prep(){
         if (have_skill($skill[Toynado]) == false){
             abort("Missing skill Toynado, please set a ccs named skins");
         } else {
-            set_auto_attack(0057);
+            set_property("battleAction", "Toynado");
         }
     }
     set_property("currentMood", "skins");
@@ -289,6 +289,8 @@ int skins (){
 
 buffer b = "if hasskill Spring Away \n skill spring away \n endif \n if hasskill Blow the Green Candle! \n skill Blow the Green Candle \n endif \n if hasskill creepy grin \n skill screepy grin \n endif \n if hasskill feel hatred \n skill feel hatred \n endif \n if hasskill Give Your Opponent the Stinkeye \n skill Give Your Opponent the Stinkeye \n endif \n if hasskill Summon Mayfly Swarm \n skill summon mayfly swarm \n endif \n if hasskill Throw Latte on Opponent \n skill throw latte on opponent \n endif \n if hasskill Snokebomb \n skill snokebomb \n endif \n skill cleesh \n attack with weapon";
 write_ccs( b, "cleesh free runaway" );
+set_property("battleAction", "custom combat script");
+set_auto_attack(0);
 
 if (get_property("initialized") == 1 || get_property("initialized") == ""){
     set_property("sewer_progress", 100); //saying that there's 100 chieftans until sewers is cleared
@@ -363,6 +365,7 @@ if (have_skill($skill[CLEESH]) == false ){
 }
 
 int sewer_progress = to_int(get_property("sewer_progress"));
+int start_adv = my_adventures();
 if ( contains_text( town_map , "clan_hobopolis.php?place=3") ) { //checking if sewers is already cleared
     print ("The Maze of Sewer Tunnels is already clear, skipping sewers", "orange") ;
     set_property("initialized", 2);
@@ -393,10 +396,19 @@ if ( contains_text( town_map , "clan_hobopolis.php?place=3") ) { //checking if s
                 }
             } until (last_choice() == 211 || last_choice() == 212);
         }
-        user_confirm("Press yes when you know cagebot is caged");
+        if (user_confirm("Press yes when you know cagebot is caged") == false){
+            abort();
+        }
         set_property("choiceAdventure198", 1);
         set_property("choiceAdventure199", 1);
         set_property("choiceAdventure197", 1);
+        if (have_familiar($familiar[peace turkey])){
+            use_familiar ($familiar[peace turkey]);
+        } else if (have_familiar($familiar[disgeist])){
+            use_familiar($familiar[disgeist]);
+        }
+        cli_execute("maximize -combat -off-hand -weapon; equip hobo code binder");
+        print("Combat rate achieved: " + numeric_modifier("combat rate"));
         repeat{
             if(item_amount($item[sewer wad]) == 0) {
                 buy(1 , $item[sewer wad]);
@@ -507,7 +519,7 @@ if ( contains_text( town_map , "clan_hobopolis.php?place=3") ) { //checking if s
         if (set_ccs("sewers") == false){
             print("No custom combat script, setting auto attack to weapon");
             wait(3);
-            set_auto_attack(1);
+            set_property("battleAction", "attack with weapon");
         }
         repeat { //using 11-leaf clover before adventuring in sewers once
             if ((have_effect($effect[Lucky!]) == 0) && item_amount($item[11-leaf clover]) > 0){
@@ -524,9 +536,13 @@ if ( contains_text( town_map , "clan_hobopolis.php?place=3") ) { //checking if s
             print ("C.H.U.M Chieftans left: " + sewer_progress, "orange");
         } until (contains_text( town_map , "clan_hobopolis.php?place=3") || to_int(get_property("sewer_progress")) <= 0); //checks if town map is open or the calculations say there are 0 chieftains left
         print ("Sewers shouuuuuld be complete, I think", "orange");
-        set_auto_attack(0);
+        set_property("battleAction", "custom combat script");
     }
 }
+int end_adv = my_adventures();
+int adv_spent = start_adv - end_adv;
+print(adv_spent + " adventures spent in the sewers");
+
 set_property("initialized", 2);
 set_property("choiceAdventure230", "2"); //Skipping binder purchase
 set_property("choiceAdventure272", "2"); //skipping marketplace
@@ -534,6 +550,7 @@ set_property("choiceAdventure230", "2"); //shouldn't ever happen but leaving Hod
 set_property("choiceAdventure225", "0"); //stopping if A Tent is encountered
 
 if (mapimage() <= 6) { //phase 1 collect 106 hobo parts
+    start_adv = my_adventures();
     if (get_property("parts_collection") == "boots"){
         boots_prep();
         int boots_left = 106 - boots();
@@ -624,7 +641,7 @@ if (mapimage() <= 6) { //phase 1 collect 106 hobo parts
             print ("skins left to collect: " + skins_left);
         }
     }
-    set_auto_attack(0);
+    set_property("battleAction", "custom combat script");
     set_property("currentMood", "apathetic");
     while (boots() < 106 && eyes() < 106 && guts() < 106 && skulls() < 106 && crotches() < 106 && skins() < 106){
         if (boots() < 106){
@@ -657,11 +674,15 @@ if (mapimage() <= 6) { //phase 1 collect 106 hobo parts
             break;
         }
     }
+    end_adv = my_adventures();
+    adv_spent = start_adv - end_adv;
+    print(adv_spent + " adventures spend collecting parts");
 }
 
 if (get_property("parts_collection") == "scarehobo"){
     int scobo_used = 0;
     int manual_hobos_killed = 0;
+    start_adv = my_adventures();
     if (mapimage() < 9){
         print("Letting other people's script catch up");
         wait(15);
@@ -718,7 +739,7 @@ if (get_property("parts_collection") == "scarehobo"){
                         abort ("Richard failed to get skins, look into that");
                     }
                 }
-                set_auto_attack(0);
+                set_property("battleAction", "custom combat script");
                 set_property("currentMood", "boots");
                 if (get_property("_lastCombatLost") == "true"){ //KoL Mafia detected that the last combat was lost so that the script is aborted and a whole bunch of adventures aren't wasted
                     abort ("It appears you lost the last combat, look into that");
@@ -796,7 +817,7 @@ if (get_property("parts_collection") == "scarehobo"){
                 abort ("Richard failed to get skins, look into that");
             }
         }
-        set_auto_attack(0);
+        set_property("battleAction", "custom combat script");
         set_property("currentMood", "boots");
         set_property("scobo_needed","");
         richard = visit_url("clan_hobopolis.php?place=3&action=talkrichard&whichtalk=3");
@@ -842,7 +863,10 @@ if (get_property("parts_collection") == "scarehobo"){
                     abort ("Richard failed to get skins, look into that");
                 }
             }
-            set_auto_attack(0);
+            end_adv = my_adventures();
+            adv_spent = start_adv - end_adv;
+            print(adv_spent + " adventures spend opening the first tent");
+            set_property("battleAction", "custom combat script");
             set_property("currentMood", "boots");
             if (get_property("_lastCombatLost") == "true"){ //KoL Mafia detected that the last combat was lost so that the script is aborted and a whole bunch of adventures aren't wasted
                 abort ("It appears you lost the last combat, look into that");
@@ -858,6 +882,15 @@ if (get_property("parts_collection") == "scarehobo"){
         }
     } until (tent_open() == true);
 }
+
+if (have_familiar($familiar[peace turkey])){
+    use_familiar ($familiar[peace turkey]);
+} else if (have_familiar($familiar[disgeist])){
+    use_familiar($familiar[disgeist]);
+}
+cli_execute("maximize -combat -off-hand");
+print("Combat rate achieved: " + numeric_modifier("combat rate"));
+start_adv = my_adventures();
 
 repeat{
     if (tent_open() == true){
@@ -917,7 +950,7 @@ repeat{
             if (get_property("is_mosher") != "true"){
                 run_choice(1);
                 cli_execute("/hobopolis staged");
-                while (get_property("moshed") == "true" ){
+                while (get_property("moshed") != "true" ){
                     print("At tent, waiting for others to stage and mosher", "blue");
                     wait(10);
                 }
@@ -935,6 +968,10 @@ repeat{
                 cli_execute("/hobopolis moshed");
             }
         }
+        end_adv = my_adventures();
+        adv_spent = start_adv - end_adv;
+        print(adv_spent + " adventures spend doing mosh");
+        print (num_mosh() + " mosh(es) executed", "blue");
     }
     if (tent_open() == false){
         while (to_int(get_property("people_unstaged")) < 6){
@@ -945,6 +982,7 @@ repeat{
         set_property("people_staged", "0");
         set_property("people_unstaged", "0");
         set_property("moshed", "false");
+        start_adv = my_adventures();
         if (get_property("parts_collection") == "scarehobo"){
             if (get_property("tent_stage") != "stage1"){
                 set_property("tent_stage","started");
@@ -993,16 +1031,8 @@ repeat{
                 while (skulls() < scobo_to_use){
                     skulls_prep();
                     adventure(1, $location[Hobopolis Town Square] );
-                    string LastAdvTxt() {
-                        string lastlog = session_logs(1)[0];
-                        int nowmark = max(last_index_of(lastlog,"["+my_turncount()+"]"),last_index_of(lastlog,"["+(my_turncount()+1)+"]"));
-                        return substring(lastlog,nowmark);
-                    }
                     if (!contains_text(LastAdvTxt(), "Richard takes a stinking hobo guts")){
                         abort ("Richard failed to get guts, look into that");
-                    }
-                    if (skulls() >= scobo_to_use){
-                        break;
                     }
                 }
                 while (crotches() < scobo_to_use){
@@ -1019,7 +1049,7 @@ repeat{
                         abort ("Richard failed to get skins, look into that");
                     }
                 }
-                set_auto_attack(0);
+                set_property("battleAction", "custom combat script");
                 set_property("currentMood", "boots");
                 set_property("scobo_needed","");
                 richard;
@@ -1065,7 +1095,7 @@ repeat{
                             abort ("Richard failed to get skins, look into that");
                         }
                     }
-                    set_auto_attack(0);
+                    set_property("battleAction", "custom combat script");
                     set_property("currentMood", "boots");
                     if (num_mosh() >= 8 && min(boots(), eyes(), guts(), skulls(), crotches(), skins()) >= 1){
                         richard;
@@ -1077,6 +1107,9 @@ repeat{
                 }
                 set_property ("tent_stage", "finished");
             }
+            end_adv = my_adventures();
+            adv_spent = start_adv - end_adv;
+            print(adv_spent + " adventures spend opening the next tent");
         } else {
             while (tent_open() == false || mapimage() < 25) {
                 print("Waiting for tent to open");
@@ -1089,6 +1122,6 @@ repeat{
 if (get_property("initialized") != "1"){
     set_property("initialized" ,"1");
     set_property("chatbotScript", get_property("chatbotScriptStorage"));
-    set_auto_attack(0);
+    set_property("battleAction", "custom combat script");
     set_property("currentMood", "apathetic");
 }
