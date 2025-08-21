@@ -149,7 +149,7 @@ void sewer() {
 	start_adv = my_adventures();
 	town_map = visit_url("clan_hobopolis.php?place=2");
 	if (contains_text(town_map , "clan_hobopolis.php?place=3")) { //checking if sewers is already cleared
-		print ("The Maze of Sewer Tunnels is already clear, skipping sewers", "orange") ;
+		print("The Maze of Sewer Tunnels is already clear, skipping sewers", "orange") ;
 		set_property("initialized", 2);
 		return;
 	}
@@ -185,8 +185,8 @@ void sewer() {
 		set_property("choiceAdventure198", 1);
 		set_property("choiceAdventure199", 1);
 		set_property("choiceAdventure197", 1);
-		maximize("-combat, equip hobo code binder, equip gatorskin umbrella", false);
-		print("Combat rate achieved: " + numeric_modifier("combat rate"));
+		if (!maximize("-combat, equip hobo code binder, equip gatorskin umbrella", false))
+			abort();
 		repeat {
 			int[item] testitems = {
 				$item[sewer wad]: 1,
@@ -215,42 +215,21 @@ void sewer() {
 			if (matcher_sewer_choice.find() && get_property("choiceAdventure198") == "1") {
 				sewer_choice += to_int(matcher_sewer_choice.group(1));
 				string sewer_noncom = visit_url("choice.php?whichchoice="+ sewer_choice +"&option=1");
-				if (contains_text(sewer_noncom, "You head down the 'shortcut' tunnel.")) {
-					sewer_progress -= 1;
-					set_property("sewer_progress", sewer_progress);
-				}
-				if (contains_text(sewer_noncom, "This ladder just goes in a big circle.")) {
-					sewer_progress -= 3;
-					set_property("sewer_progress", sewer_progress);
-				}
-				if (contains_text(sewer_noncom, "You head toward the Egress.")) {
-					sewer_progress -= 5;
-					set_property("sewer_progress", sewer_progress);
-				}
-				if (contains_text(sewer_noncom, "These will indubitably satisfy my refined appetite")) {
-					sewer_progress -= 1;
-					set_property("sewer_progress", sewer_progress);
-				}
-				if (contains_text(sewer_noncom, "He grabs the wad and runs away")) {
-					sewer_progress -= 1;
-					set_property("sewer_progress", sewer_progress);
-				}
-				if (contains_text(sewer_noncom, "He finds a bottle of Ooze-O")) {
-					sewer_progress -= 1;
-					set_property("sewer_progress", sewer_progress);
-				}
-				if (contains_text(sewer_noncom, "you douse yourself with oil of oiliness")) {
-					sewer_progress -= 1;
-					set_property("sewer_progress", sewer_progress);
-				}
-				if (contains_text(sewer_noncom, "your gatorskin umbrella allows you to pass beneath the sewagefall without incident")) {
-					sewer_progress -= 1;
-					set_property("sewer_progress", sewer_progress);
-				}
-				if (contains_text(sewer_noncom, "looks like somebody else opened this grate from the other side")) {
-					sewer_progress -= 5;
-					set_property("sewer_progress", sewer_progress);
-				}
+				int[string] progress = {
+					"You head down the 'shortcut' tunnel.": 1,
+					"This ladder just goes in a big circle.": 3,
+					"You head toward the Egress.": 5,
+					"These will indubitably satisfy my refined appetite": 1,
+					"He grabs the wad and runs away": 1,
+					"He finds a bottle of Ooze-O": 1,
+					"you douse yourself with oil of oiliness": 1,
+					"your gatorskin umbrella allows you to pass beneath the sewagefall without incident": 1,
+					"looks like somebody else opened this grate from the other side": 5
+				};
+				foreach encounter,contributes in progress
+					if (sewer_noncom.contains_text(encounter))
+						sewer_progress -= contributes;
+				set_property("sewer_progress", sewer_progress);
 			}
 			else if (contains_text(visit_sewers, "Round 1"))
 				run_combat();
@@ -272,7 +251,7 @@ void sewer() {
 		if (get_property("parts_collection") == "cagebot")
 			abort("There's no point in doing lucky while being a cagebot? To reset your role (ie mosher or cagebot) type \"set initialized = 3\"");
 		if (item_amount($item[11-leaf clover]) < sewer_progress) { //checks if there is enough clovers
-			print ("Not enough clovers?", "orange");
+			print("Not enough clovers?", "orange");
 			abort ("If you've already cleared some of the sewers manually, type set sewer_progress = how many sewers adventures are left");
 		}
 		if (my_buffedstat($stat[moxie]) < ($monster[C. H. U. M. chieftain].monster_attack() + 10) && get_property("IveGotThis") != "true")
@@ -303,10 +282,10 @@ void sewer() {
 				abort ("It appears you lost the last combat, look into that");
 			sewer_progress -= 1; //doing some calculations on how many chieftans are left
 			set_property("sewer_progress", sewer_progress);
-			print ("C.H.U.M Chieftans left: " + sewer_progress, "orange");
+			print("C.H.U.M Chieftans left: " + sewer_progress, "orange");
 			town_map = visit_url("clan_hobopolis.php?place=2");
 		} until (contains_text(town_map , "clan_hobopolis.php?place=3") || to_int(get_property("sewer_progress")) <= 0); //checks if town map is open or the calculations say there are 0 chieftains left
-		print ("Sewers shouuuuuld be complete, I think", "orange");
+		print("Sewers shouuuuuld be complete, I think", "orange");
 		set_property("battleAction", "custom combat script");
 	}
 
@@ -342,9 +321,9 @@ void prep(string override) {
 		set_property("currentMood", get_property("parts_collector"));
 		if ((estimated_spelldmg < ($monster[normal hobo].monster_hp() + 100) || my_buffedstat($stat[moxie]) < ($monster[normal hobo].monster_attack() + 10)) && get_property("IveGotThis") != "true") {
 			if (estimated_spelldmg < ($monster[normal hobo].monster_hp() + 100))
-				print ("You are expected to do " + estimated_spelldmg + " damage when casting the hobopolis spell, while you need to deal " + ($monster[normal hobo].monster_hp() + 100) + " damage to guarentee a hobo part from normal hobos.");
+				print("You are expected to do " + estimated_spelldmg + " damage when casting the hobopolis spell, while you need to deal " + ($monster[normal hobo].monster_hp() + 100) + " damage to guarentee a hobo part from normal hobos.");
 			if (my_buffedstat($stat[moxie]) < ($monster[normal hobo].monster_attack() + 10))
-				print ("You have " + my_buffedstat($stat[moxie]) + " moxie, but you need at least " + ($monster[normal hobo].monster_attack() + 10) + " moxie to safely adventure at town square");
+				print("You have " + my_buffedstat($stat[moxie]) + " moxie, but you need at least " + ($monster[normal hobo].monster_attack() + 10) + " moxie to safely adventure at town square");
 			abort("It seems you failed one of the stat checks. Condider creating mood that boosts spell damage percent, mainstat, or minimizes ML. If you would like to skip this safety check type \"IveGotThis = true\", but I wouldn't reccomend it TBH");
 		}
 	}
@@ -364,7 +343,7 @@ void phase_one() {
 	int start_adv = my_adventures();
 
 	if (mapimage() <= 6) { //phase 1 collect 106 hobo parts
-		if ($strings[skins,boots,skulls,eyes,crotches,guts] contains get_property("parts_collection")) {
+		if (roles contains get_property("parts_collection") && !($strings[scarehobo,cagebot] contains get_property("parts_collection"))) {
 			prep();
 			int parts_left = 106 - richard("boots");
 			while (richard("boots") < 106) {
@@ -374,7 +353,7 @@ void phase_one() {
 				if (!LastAdvTxt().contains_text(rich_takes[get_property("parts_collection")]))
 					abort(rich_takes[get_property("parts_collection")].replace_string("takes", "failed to take"));
 				parts_left = 106 - richard("boots");
-				print ("Boots left to collect: " + parts_left);
+				print("Boots left to collect: " + parts_left);
 			}
 		}
 
@@ -439,7 +418,7 @@ void phase_two() {
 			} until (min(richard("boots"), richard("eyes"), richard("guts"), richard("skulls"), richard("crotches"), richard("skins")) >= 1);
 		}
 	}
-	print ("Town Square image is currently at " + mapimage(), "blue");
+	print("Town Square image is currently at " + mapimage(), "blue");
 	print(scobo_used + " scarehobos used, average is " + floor(1375-manual_hobos_killed)/8, "blue");
 	if (mapimage() == 12 && get_property("tent_stage") != "stage1") {
 		set_property("tent_stage", "started");
@@ -447,8 +426,9 @@ void phase_two() {
 		if (get_property("scobo_needed") != "")
 			foreach n, needed in int[int]{11:60, 10:44, 9:28, 8:12, 7:0} {
 				int total = 0;
-				foreach part in roles if (!($strings[scarehobo,cagebot] contains part))
-					total += min(n, richard(part));
+				foreach part in roles
+					if (!($strings[scarehobo,cagebot] contains part))
+						total += min(n, richard(part));
 				if (total >= needed) {
 					scobo_to_use = n;
 					set_property("scobo_needed", `{n}`);
@@ -617,7 +597,7 @@ void main() {
 			end_adv = my_adventures();
 			adv_spent = start_adv - end_adv;
 			print(adv_spent + " adventures spend doing mosh");
-			print (num_mosh() + " mosh(es) executed", "blue");
+			print(num_mosh() + " mosh(es) executed", "blue");
 		}
 		if (!tent_open()) {
 			while (to_int(get_property("people_unstaged")) < 6 && get_property("moshed") == "true") {
