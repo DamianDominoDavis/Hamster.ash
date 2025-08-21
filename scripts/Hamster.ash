@@ -1,6 +1,6 @@
 boolean[string] PARTS = $strings[boots,eyes,guts,skulls,crotches,skins,scarehobo,cagebot];
-int estimated_spelldmg = 0;
-float spelldmgp_value = 0;
+string town_map = visit_url("clan_hobopolis.php?place=2");
+string rlogs = visit_url("clan_raidlogs.php");
 
 void stat_check() {
 	if ((estimated_spelldmg < ($monster[normal hobo].monster_hp() + 100) || my_buffedstat($stat[moxie]) < ($monster[normal hobo].monster_attack() + 10)) && get_property("IveGotThis") != "true") {
@@ -13,7 +13,6 @@ void stat_check() {
 		abort("It seems you failed one of the stat checks. Condider creating mood that boosts spell damage percent, mainstat, or minimizes ML. If you would like to skip this safety check type \"IveGotThis = true\", but I wouldn't reccomend it TBH");
 	}
 }
-
 
 void prep(){
 	record role {
@@ -30,6 +29,8 @@ void prep(){
 		"crotches": new role("sleaze", $modifier[sleaze spell damage], $skill[spirit of bacon grease], $skill[stuffed mortar shell]),
 		"guts": new role("stench", $modifier[stench spell damage], $skill[spirit of garlic], $skill[stuffed mortar shell])
 	};
+	int estimated_spelldmg = 0;
+	float spelldmgp_value = 0;
  
 	if (get_property("parts_collection") == "scarehobo")
 		return;
@@ -61,14 +62,12 @@ string LastAdvTxt() {
 	return substring(lastlog,nowmark);
 }
 
-string town_map = visit_url("clan_hobopolis.php?place=2");
 int mapimage() {
 	town_map = visit_url("clan_hobopolis.php?place=2");
 	int mapnumber = 0;
 	matcher matcher_mapnumber = create_matcher("Town Square \\(picture #(\\d+)(o?)\\)", town_map); 
-	if (matcher_mapnumber.find()) {
+	if (matcher_mapnumber.find())
 		mapnumber += matcher_mapnumber.group(1).to_int();
-	}
 	return mapnumber;
 }
 
@@ -79,8 +78,6 @@ boolean tent_open() {
 	}
 	return contains_text(matcher_mapnumber.group(2).to_string(), "o");
 }
-
-string rlogs = visit_url("clan_raidlogs.php");
 
 int grates_opened() {
 	rlogs = visit_url("clan_raidlogs.php");
@@ -346,11 +343,8 @@ void sewer() {
 	print((start_adv - my_adventures()) + " adventures spent in the sewers");
 }
 
-void main() {
-	setup();
-	sewer();
-
-	set_property("initialized", 2);
+void phase_one() {
+		set_property("initialized", 2);
 	set_property("choiceAdventure230", "2"); //Skipping binder purchase
 	set_property("choiceAdventure272", "2"); //skipping marketplace
 	set_property("choiceAdventure230", "2"); //shouldn't ever happen but leaving Hodgeman alone
@@ -380,44 +374,27 @@ void main() {
 			}
 		}
 
-
 		set_property("battleAction", "custom combat script");
 		set_property("currentMood", "apathetic");
 		while (richard("boots") < 106 || richard("eyes") < 106 || richard("guts") < 106 || richard("skulls") < 106 || richard("crotches") < 106 || richard("skins") < 106 || mapimage() <= 6) {
-			if (richard("boots") < 106) {
-				int boots_left = 106 - richard("boots");
-				print("Looks we are short " + boots_left + " boots");
-			}
-			if (richard("eyes") < 106) {
-				int eyes_left = 106 - richard("eyes");
-				print("Looks we are short " + eyes_left + " eyes");
-			}
-			if (richard("guts") < 106) {
-				int guts_left = 106 - richard("guts");
-				print("Looks we are short " + guts_left + " guts");
-			}
-			if (richard("skulls") < 106) {
-				int skulls_left = 106 - richard("skulls");
-				print("Looks we are short " + skulls_left + " skulls");
-			}
-			if (richard("crotches") < 106) {
-				int crotches_left = 106 - richard("crotches");
-				print("Looks we are short " + crotches_left + " crotches");
-			}
-			if (richard("skins") < 106) {
-				int skins_left = 106 - richard("skins");
-				print("Looks we are short " + skins_left + " skins");
-			}
+			foreach thing in $strings[skins,boots,skulls,eyes,crotches,guts]
+			if (richard(thing) < 106)
+				print(`Looks we are short {106 - richard(thing)} {thing}{thing == "crotch"?"e":""}s`);
 			print("Not all parts have been collected, waiting");
 			waitq(5);
-			if (richard("boots") >= 106 && richard("eyes") >= 106 && richard("guts") >= 106 && richard("skulls") >= 106 && richard("crotches") >= 106 && richard("skins") >= 106 && mapimage() <= 6) {
+			if (richard("boots") >= 106 && richard("eyes") >= 106 && richard("guts") >= 106 && richard("skulls") >= 106 && richard("crotches") >= 106 && richard("skins") >= 106 && mapimage() <= 6)
 				break;
-			}
 		}
 		end_adv = my_adventures();
 		adv_spent = start_adv - end_adv;
 		print(adv_spent + " adventures spend collecting parts");
 	}
+}
+
+void main() {
+	setup();
+	sewer();
+	phase_one();
 
 	if (get_property("parts_collection") == "scarehobo") {
 		int scobo_used = 0;
