@@ -2,7 +2,7 @@ int estimated_spelldmg = 0;
 float spelldmgp_value = 0;
 
 void stat_check(){
-    if (estimated_spelldmg < ($monster[normal hobo].monster_hp() + 100) || my_buffedstat($stat[moxie]) < ($monster[normal hobo].monster_attack() + 10) && get_property("IveGotThis") != "true"){
+    if ((estimated_spelldmg < ($monster[normal hobo].monster_hp() + 100) || my_buffedstat($stat[moxie]) < ($monster[normal hobo].monster_attack() + 10)) && get_property("IveGotThis") != "true"){
         if (estimated_spelldmg < ($monster[normal hobo].monster_hp() + 100)){
             print ("You are expected to do " + estimated_spelldmg + " damage when casting the hobopolis spell, while you need to deal " + ($monster[normal hobo].monster_hp() + 100) + " damage to guarentee a hobo part from normal hobos.");
         }
