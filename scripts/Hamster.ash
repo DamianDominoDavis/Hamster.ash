@@ -679,8 +679,6 @@ if (mapimage() <= 6) { //phase 1 collect 106 hobo parts
     print(adv_spent + " adventures spend collecting parts");
 }
 
-print(mapimage() + boots() + eyes() + skulls() + );
-
 if (get_property("parts_collection") == "scarehobo"){
     int scobo_used = 0;
     int manual_hobos_killed = 0;
