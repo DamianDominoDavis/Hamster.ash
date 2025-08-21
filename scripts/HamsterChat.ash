@@ -16,8 +16,5 @@ void main (string sender , string message, string channel){
       if (contains_text(message, "update")){
          cli_execute("git update Astro3207/Hamster");
       }
-      if (contains_text(message, "hamster")){
-         cli_execute("hamster.ash");
-      }
    }
 }
