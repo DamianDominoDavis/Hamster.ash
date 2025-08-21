@@ -64,7 +64,7 @@ void eyes_prep(){
         if (have_skill($skill[Snowclone]) == false){
             abort("Missing skill Snowclone, please set a ccs named eyes");
         } else {
-            set_property("battleAction", "skill snowlcone");
+            set_property("battleAction", "skill snowclone");
         }
     }
     set_property("currentMood", "eyes");
