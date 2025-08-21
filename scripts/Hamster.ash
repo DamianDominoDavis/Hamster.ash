@@ -13,174 +13,44 @@ void stat_check() {
 	}
 }
 
-void boots_prep() {
-	if (outfit ("boots") == false) {
-		print("No outfit named boots (capitalization matters), wearing a generic outfit", "blue");
-		if (get_property("parts_collection") != "scarehobo") {
-			waitq(3);
-		}
-		estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[hot spell damage]));
+
+void prep(){
+	record role {
+		string ele;
+		modifier ele_mod;
+		skill spirit_of_ele;
+		skill atk_spell;
+	}
+	role[string] roles = {
+		"skins": new role("", $modifier[none], $skill[spirit of nothing], $skill[stuffed mortar shell]),
+		"boots": new role("hot", $modifier[hot spell damage], $skill[spirit of cayenne], $skill[stuffed mortar shell]),
+		"skulls": new role("spooky", $modifier[spooky spell damage], $skill[spirit of wormwood], $skill[stuffed mortar shell]),
+		"eyes": new role("cold", $modifier[cold spell damage], $skill[spirit of peppermint], $skill[stuffed mortar shell]),
+		"crotches": new role("sleaze", $modifier[sleaze spell damage], $skill[spirit of bacon grease], $skill[stuffed mortar shell]),
+		"guts": new role("stench", $modifier[stench spell damage], $skill[spirit of garlic], $skill[stuffed mortar shell])
+	};
+ 
+	if (get_property("parts_collection") == "scarehobo")
+		return;
+	if (outfit(get_property("parts_collection")) == false) {
+		print(`No outfit named {get_property("parts_collection")} (capitalization matters), wearing a generic outfit`, "blue");
+		waitq(3);
+		estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier(roles[get_property("parts_collection")].ele_mod) + numeric_modifier($modifier[spell damage])) * max(0.50,(1-(numeric_modifier($modifier[monster level])*0.004)));
 		spelldmgp_value = ((((numeric_modifier($modifier[Spell Damage Percent]) + 100 + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[hot spell damage]))) - estimated_spelldmg)/((((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * (my_buffedstat($stat[mysticality])+100)) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[hot spell damage]))) - estimated_spelldmg);
-		cli_execute("maximize 2.8 hot spell damage, " + spelldmgp_value +" spell damage percent, mys, -1000 lantern");
+		cli_execute(`maximize 2.8 {roles[get_property("parts_collection")].ele} spell damage, {spelldmgp_value} spell damage percent, mys, -1000 lantern`);
 	}
-	estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[hot spell damage])) * max(0.50,(1-(numeric_modifier($modifier[monster level])*0.004)));
-	if (have_skill($skill[Flavour of Magic]) == true) {
-		cli_execute("cast Spirit of Cayenne");
+	estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier(roles[get_property("parts_collection")].ele_mod) + numeric_modifier($modifier[spell damage])) * max(0.50,(1-(numeric_modifier($modifier[monster level])*0.004)));
+	if (have_skill($skill[Flavour of Magic]))
+		use_skill(roles[get_property("parts_collection")].spirit_of_ele);
+	if (!set_ccs(get_property("parts_collection"))) {
+		print(`No custom combat script named {get_property("parts_collection")} (capitalization matters), setting auto attack to {roles[get_property("parts_collection")].atk_spell}`, "blue");
+		wait (3);
+		if (!have_skill(roles[get_property("parts_collection")].atk_spell))
+			abort(`Missing skill {roles[get_property("parts_collection")].atk_spell}, please set a ccs named {get_property("parts_collector")}`);
+		else
+			set_property("battleAction", roles[get_property("parts_collection")].atk_spell);
 	}
-	if (set_ccs("boots") == false) {
-		print("No custom combat script named boots (capitalization matters), setting auto attack to Awesome Balls of Fire", "blue");
-		if (get_property("parts_collection") != "scarehobo") {
-			waitq(3);
-		}
-		if (have_skill($skill[Awesome Balls of Fire]) == false) {
-			abort("Missing skill Awesome Balls of Fire, please set a ccs named boots");
-		} else {
-			set_property("battleAction", "Awesome Balls of Fire");
-		}
-	}
-	set_property("currentMood", "boots");
-	stat_check();
-}
-
-void eyes_prep() {
-	if (outfit ("eyes") == false) {
-		print("No outfit named eyes (capitalization matters), wearing a generic outfit", "blue");
-		if (get_property("parts_collection") != "scarehobo") {
-			wait (3);
-		}
-		estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[cold spell damage]));
-		spelldmgp_value = ((((numeric_modifier($modifier[Spell Damage Percent]) + 100 + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[cold spell damage]))) - estimated_spelldmg)/((((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * (my_buffedstat($stat[mysticality])+100)) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[cold spell damage]))) - estimated_spelldmg);
-		cli_execute("maximize 2.8 cold spell damage, "+ spelldmgp_value +" spell damage percent, mys, -1000 lantern");
-	}
-	estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[cold spell damage])) * max(0.50,(1-(numeric_modifier($modifier[monster level])*0.004)));
-	if (have_skill($skill[Flavour of Magic]) == true) {
-		cli_execute("cast Spirit of Peppermint");
-	}
-	if (set_ccs("eyes") == false) {
-		print("No custom combat script named eyes (capitalization matters), setting auto attack to Snowclone", "blue");
-		if (get_property("parts_collection") != "scarehobo") {
-			wait (3);
-		}
-		if (have_skill($skill[Snowclone]) == false) {
-			abort("Missing skill Snowclone, please set a ccs named eyes");
-		} else {
-			set_property("battleAction", "skill snowclone");
-		}
-	}
-	set_property("currentMood", "eyes");
-	stat_check();
-}
-
-void guts_prep() {
-	if (outfit ("guts") == false) {
-		print("No outfit named guts (capitalization matters), wearing a generic outfit", "blue");
-		if (get_property("parts_collection") != "scarehobo") {
-			wait (3);
-		}
-		estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[stench spell damage]));
-		spelldmgp_value = ((((numeric_modifier($modifier[Spell Damage Percent]) + 100 + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[stench spell damage]))) - estimated_spelldmg)/((((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * (my_buffedstat($stat[mysticality])+100)) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[stench spell damage]))) - estimated_spelldmg);
-		cli_execute("maximize 2.8 stench spell damage, " + spelldmgp_value + " spell damage percent, mys, -1000 lantern");
-	}
-	estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[stench spell damage])) * max(0.50,(1-(numeric_modifier($modifier[monster level])*0.004)));
-	if (have_skill($skill[Flavour of Magic]) == true) {
-		cli_execute("cast Spirit of Garlic");
-	}
-	if (set_ccs("guts") == false) {
-		print("No custom combat script named guts (capitalization matters), setting auto attack to Eggsplosion", "blue");
-		if (get_property("parts_collection") != "scarehobo") {
-			wait (3);
-		}
-		if (have_skill($skill[Eggsplosion]) == false) {
-			abort("Missing skill Eggsplosion, please set a ccs named guts");
-		} else {
-			set_property("battleAction", "skill Eggsplosion");
-		}
-	}
-	set_property("currentMood", "guts");
-	stat_check();
-}
-
-void skulls_prep() {
-	if (outfit ("skulls") == false) {
-		print("No outfit named skulls (capitalization matters), wearing a generic outfit", "blue");
-		if (get_property("parts_collection") != "scarehobo") {
-			wait (3);
-		}
-		estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[spooky spell damage]));
-		spelldmgp_value = ((((numeric_modifier($modifier[Spell Damage Percent]) + 100 + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[spooky spell damage]))) - estimated_spelldmg)/((((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * (my_buffedstat($stat[mysticality])+100)) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[spooky spell damage]))) - estimated_spelldmg);
-		cli_execute("maximize 2.8 spooky spell damage, " + spelldmgp_value + " spell damage percent, -lantern");
-	}
-	estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[spooky spell damage])) * max(0.50,(1-(numeric_modifier($modifier[monster level])*0.004)));
-	if (have_skill($skill[Flavour of Magic]) == true) {
-		cli_execute("cast Spirit of Wormwood");
-	}
-	if (set_ccs("skulls") == false) {
-		print("No custom combat script named skulls (capitalization matters), setting auto attack to Raise Backup Dancer", "blue");
-		if (get_property("parts_collection") != "scarehobo") {
-			wait (3);
-		}
-		if (have_skill($skill[Raise Backup Dancer]) == false) {
-			abort("Missing skill Raise Backup Dancer, please set a ccs named skulls");
-		} else {
-			set_property("battleAction", "Raise Backup Dancer");
-		}
-	}
-	set_property("currentMood", "skulls");
-	stat_check();
-}
-
-void crotches_prep() {
-	if (outfit ("crotches") == false) {
-		print("No outfit named crotches (capitalization matters), wearing a generic outfit", "blue");
-		if (get_property("parts_collection") != "scarehobo") {
-			wait (3);
-		}
-		estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[sleaze spell damage]));
-		spelldmgp_value = ((((numeric_modifier($modifier[Spell Damage Percent]) + 100 + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[sleaze spell damage]))) - estimated_spelldmg)/((((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * (my_buffedstat($stat[mysticality])+100)) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[sleaze spell damage]))) - estimated_spelldmg);
-		cli_execute("maximize 2.8 sleaze spell damage, "+ spelldmgp_value + " spell damage percent, mys, -1000 lantern");
-	}
-	estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[sleaze spell damage])) * max(0.50,(1-(numeric_modifier($modifier[monster level])*0.004)));
-	if (have_skill($skill[Flavour of Magic]) == true) {
-		cli_execute("cast Spirit of Bacon Grease");
-	}
-	if (set_ccs("crotches") == false) {
-		print("No custom combat script named crotches (capitalization matters), setting auto attack to grease lightning", "blue");
-		if (get_property("parts_collection") != "scarehobo") {
-			wait (3);
-		}
-		if (have_skill($skill[Grease Lightning]) == false) {
-			abort("Missing skill Grease Lightning, please set a ccs named crotches");
-		} else {
-			set_property("battleAction", "Grease Lightning");
-		}
-	}
-	set_property("currentMood", "crotches");
-	stat_check();
-}
-
-void skins_prep() {
-	if (outfit ("skins") == false) {
-		print("No outfit named skins (capitalization matters), wearing a generic outfit", "blue");
-		if (get_property("parts_collection") != "scarehobo") {
-			wait (3);
-		}
-		estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]));
-		spelldmgp_value = ((((numeric_modifier($modifier[Spell Damage Percent]) + 100 + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]))) - estimated_spelldmg)/((((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * (my_buffedstat($stat[mysticality])+100)) + numeric_modifier($modifier[spell damage]))) - estimated_spelldmg);
-		cli_execute("maximize "+ spelldmgp_value + " spell damage percent, mys, -1000 lantern");
-	}
-		estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage])) * max(0.50,(1-(numeric_modifier($modifier[monster level])*0.004)));
-	if (set_ccs("skins") == false) {
-		print("No custom combat script named skins (capitalization matters), setting auto attack to Toynado", "blue");
-		if (get_property("parts_collection") != "scarehobo") {
-			wait (3);
-		}
-		if (have_skill($skill[Toynado]) == false) {
-			abort("Missing skill Toynado, please set a ccs named skins");
-		} else {
-			set_property("battleAction", "Toynado");
-		}
-	}
-	set_property("currentMood", "skins");
+	set_property("currentMood", get_property("parts_collector"));
 	stat_check();
 }
 
