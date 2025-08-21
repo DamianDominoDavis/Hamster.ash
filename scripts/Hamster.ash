@@ -13,175 +13,64 @@ void stat_check(){
     }
 }
 
-void boots_prep(){
-    if (outfit ("boots") == false ){
-        print("No outfit named boots (capitalization matters), wearing a generic outfit", "blue");
-        if (get_property("parts_collection") != "scarehobo"){
-            wait (3);
-        }
-        estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[hot spell damage]));
-        spelldmgp_value = ((((numeric_modifier($modifier[Spell Damage Percent]) + 100 + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[hot spell damage]))) - estimated_spelldmg)/((((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * (my_buffedstat($stat[mysticality])+100)) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[hot spell damage]))) - estimated_spelldmg);
-        cli_execute("maximize 2.8 hot spell damage, " + spelldmgp_value +" spell damage percent, mys, -1000 lantern");
-    }
-    estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[hot spell damage])) * max(0.50,(1-(numeric_modifier($modifier[monster level])*0.004)));
-    if (have_skill($skill[Flavour of Magic]) == true){
-        cli_execute("cast Spirit of Cayenne");
-    }
-    if (set_ccs("boots") == false){
-        print("No custom combat script named boots (capitalization matters), setting auto attack to Awesome Balls of Fire", "blue");
-        if (get_property("parts_collection") != "scarehobo"){
-            wait (3);
-        }
-        if (have_skill($skill[Awesome Balls of Fire]) == false){
-            abort("Missing skill Awesome Balls of Fire, please set a ccs named boots");
-        } else {
-            set_property("battleAction", "Awesome Balls of Fire");
-        }
-    }
-    set_property("currentMood", "boots");
-    stat_check();
-}
-
-void eyes_prep(){
-    if (outfit ("eyes") == false ){
-        print("No outfit named eyes (capitalization matters), wearing a generic outfit", "blue");
-        if (get_property("parts_collection") != "scarehobo"){
-            wait (3);
-        }
-        estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[cold spell damage]));
-        spelldmgp_value = ((((numeric_modifier($modifier[Spell Damage Percent]) + 100 + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[cold spell damage]))) - estimated_spelldmg)/((((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * (my_buffedstat($stat[mysticality])+100)) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[cold spell damage]))) - estimated_spelldmg);
-        cli_execute("maximize 2.8 cold spell damage, "+ spelldmgp_value +" spell damage percent, mys, -1000 lantern");
-    }
-    estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[cold spell damage])) * max(0.50,(1-(numeric_modifier($modifier[monster level])*0.004)));
-    if (have_skill($skill[Flavour of Magic]) == true){
-        cli_execute("cast Spirit of Peppermint");
-    }
-    if (set_ccs("eyes") == false){
-        print("No custom combat script named eyes (capitalization matters), setting auto attack to Snowclone", "blue");
-        if (get_property("parts_collection") != "scarehobo"){
-            wait (3);
-        }
-        if (have_skill($skill[Snowclone]) == false){
-            abort("Missing skill Snowclone, please set a ccs named eyes");
-        } else {
-            set_property("battleAction", "skill snowclone");
-        }
-    }
-    set_property("currentMood", "eyes");
-    stat_check();
-}
-
-void guts_prep(){
-    if (outfit ("guts") == false ){
-        print("No outfit named guts (capitalization matters), wearing a generic outfit", "blue");
-        if (get_property("parts_collection") != "scarehobo"){
-            wait (3);
-        }
-        estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[stench spell damage]));
-        spelldmgp_value = ((((numeric_modifier($modifier[Spell Damage Percent]) + 100 + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[stench spell damage]))) - estimated_spelldmg)/((((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * (my_buffedstat($stat[mysticality])+100)) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[stench spell damage]))) - estimated_spelldmg);
-        cli_execute("maximize 2.8 stench spell damage, " + spelldmgp_value + " spell damage percent, mys, -1000 lantern");
-    }
-    estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[stench spell damage])) * max(0.50,(1-(numeric_modifier($modifier[monster level])*0.004)));
-    if (have_skill($skill[Flavour of Magic]) == true){
-        cli_execute("cast Spirit of Garlic");
-    }
-    if (set_ccs("guts") == false){
-        print("No custom combat script named guts (capitalization matters), setting auto attack to Eggsplosion", "blue");
-        if (get_property("parts_collection") != "scarehobo"){
-            wait (3);
-        }
-        if (have_skill($skill[Eggsplosion]) == false){
-            abort("Missing skill Eggsplosion, please set a ccs named guts");
-        } else {
-            set_property("battleAction", "skill Eggsplosion");
-        }
-    }
-    set_property("currentMood", "guts");
-    stat_check();
-}
-
-void skulls_prep() {
-    if (outfit ("skulls") == false ){
-        print("No outfit named skulls (capitalization matters), wearing a generic outfit", "blue");
-        if (get_property("parts_collection") != "scarehobo"){
-            wait (3);
-        }
-        estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[spooky spell damage]));
-        spelldmgp_value = ((((numeric_modifier($modifier[Spell Damage Percent]) + 100 + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[spooky spell damage]))) - estimated_spelldmg)/((((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * (my_buffedstat($stat[mysticality])+100)) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[spooky spell damage]))) - estimated_spelldmg);
-        cli_execute("maximize 2.8 spooky spell damage, " + spelldmgp_value + " spell damage percent, -lantern");
-    }
-    estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[spooky spell damage])) * max(0.50,(1-(numeric_modifier($modifier[monster level])*0.004)));
-    if (have_skill($skill[Flavour of Magic]) == true){
-        cli_execute("cast Spirit of Wormwood");
-    }
-    if (set_ccs("skulls") == false){
-        print("No custom combat script named skulls (capitalization matters), setting auto attack to Raise Backup Dancer", "blue");
-        if (get_property("parts_collection") != "scarehobo"){
-            wait (3);
-        }
-        if (have_skill($skill[Raise Backup Dancer]) == false){
-            abort("Missing skill Raise Backup Dancer, please set a ccs named skulls");
-        } else {
-            set_property("battleAction", "Raise Backup Dancer");
-        }
-    }
-    set_property("currentMood", "skulls");
-    stat_check();
-}
-
-void crotches_prep(){
-    if (outfit ("crotches") == false ){
-        print("No outfit named crotches (capitalization matters), wearing a generic outfit", "blue");
-        if (get_property("parts_collection") != "scarehobo"){
-            wait (3);
-        }
-        estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[sleaze spell damage]));
-        spelldmgp_value = ((((numeric_modifier($modifier[Spell Damage Percent]) + 100 + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[sleaze spell damage]))) - estimated_spelldmg)/((((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * (my_buffedstat($stat[mysticality])+100)) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[sleaze spell damage]))) - estimated_spelldmg);
-        cli_execute("maximize 2.8 sleaze spell damage, "+ spelldmgp_value + " spell damage percent, mys, -1000 lantern");
-    }
-    estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[sleaze spell damage])) * max(0.50,(1-(numeric_modifier($modifier[monster level])*0.004)));
-    if (have_skill($skill[Flavour of Magic]) == true){
-        cli_execute("cast Spirit of Bacon Grease");
-    }
-    if (set_ccs("crotches") == false){
-        print("No custom combat script named crotches (capitalization matters), setting auto attack to grease lightning", "blue");
-        if (get_property("parts_collection") != "scarehobo"){
-            wait (3);
-        }
-        if (have_skill($skill[Grease Lightning]) == false){
-            abort("Missing skill Grease Lightning, please set a ccs named crotches");
-        } else {
-            set_property("battleAction", "Grease Lightning");
-        }
-    }
-    set_property("currentMood", "crotches");
-    stat_check();
-}
-
-void skins_prep(){
-    if (outfit ("skins") == false ){
-        print("No outfit named skins (capitalization matters), wearing a generic outfit", "blue");
-        if (get_property("parts_collection") != "scarehobo"){
-            wait (3);
-        }
-        estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]));
-        spelldmgp_value = ((((numeric_modifier($modifier[Spell Damage Percent]) + 100 + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]))) - estimated_spelldmg)/((((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * (my_buffedstat($stat[mysticality])+100)) + numeric_modifier($modifier[spell damage]))) - estimated_spelldmg);
-        cli_execute("maximize "+ spelldmgp_value + " spell damage percent, mys, -1000 lantern");
-    }
-        estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage])) * max(0.50,(1-(numeric_modifier($modifier[monster level])*0.004)));
-    if (set_ccs("skins") == false){
-        print("No custom combat script named skins (capitalization matters), setting auto attack to Toynado", "blue");
-        if (get_property("parts_collection") != "scarehobo"){
-            wait (3);
-        }
-        if (have_skill($skill[Toynado]) == false){
-            abort("Missing skill Toynado, please set a ccs named skins");
-        } else {
-            set_property("battleAction", "Toynado");
-        }
-    }
-    set_property("currentMood", "skins");
-    stat_check();
+void prep(){
+	string[string] wheel1 = {
+		"skins":"",
+		"boots":"hot",
+		"skulls":"spooky",
+		"eyes":"cold",
+		"crotches":"sleaze",
+		"guts":"stench"
+	};
+	modifier[string] wheel2 = {
+		"skins":$modifier[none],
+		"boots":$modifier[hot spell damage],
+		"skulls":$modifier[spooky spell damage],
+		"eyes":$modifier[cold spell damage],
+		"crotches":$modifier[sleaze spell damage],
+		"guts":$modifier[stench spell damage]
+	};
+	string[string] wheel3 = {
+		"skins":"nothing",
+		"boots":"Cayenne",
+		"skulls":"Wormwood",
+		"eyes":"Peppermint",
+		"crotches":"Bacon Grease",
+		"guts":"Garlic"
+	};
+	string[string] wheel4 = {
+		"skins":"Toynado",
+		"boots":"Awesome Balls of Fire",
+		"skulls":"Raise Backup Dancer",
+		"eyes":"Snowclone",
+		"crotches":"Grease Lightning",
+		"guts":"Eggsplosion"
+	};
+ 
+	if (get_property("parts_collection") == "scarehobo")
+		return;
+	if (outfit(get_property("parts_collection")) == false) {
+		print(`No outfit named {get_property("parts_collection")} (capitalization matters), wearing a generic outfit`, "blue");
+		waitq(3);
+		estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier(wheel2[get_property("parts_collection")]) + numeric_modifier($modifier[spell damage])) * max(0.50,(1-(numeric_modifier($modifier[monster level])*0.004)));
+		spelldmgp_value = ((((numeric_modifier($modifier[Spell Damage Percent]) + 100 + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[hot spell damage]))) - estimated_spelldmg)/((((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * (my_buffedstat($stat[mysticality])+100)) + numeric_modifier($modifier[spell damage]) + numeric_modifier($modifier[hot spell damage]))) - estimated_spelldmg);
+		cli_execute(`maximize 2.8 {wheel[get_property("parts_collection")]} spell damage, {spelldmgp_value} spell damage percent, mys, -1000 lantern`);
+	}
+	estimated_spelldmg = ((numeric_modifier($modifier[Spell Damage Percent]) + 100)/100) * (35 + (0.35 * my_buffedstat($stat[mysticality])) + numeric_modifier(wheel2[get_property("parts_collection")]) + numeric_modifier($modifier[spell damage])) * max(0.50,(1-(numeric_modifier($modifier[monster level])*0.004)));
+	if (have_skill($skill[Flavour of Magic]) == true){
+		cli_execute(`cast Spirit of {wheel3[get_property("parts_collection")]}`);
+	}
+	if (set_ccs(get_property("parts_collection")) == false) {
+		print(`No custom combat script named {get_property("parts_collection")} (capitalization matters), setting auto attack to {wheel4[get_property("parts_collection")]}`, "blue");
+		wait (3);
+		if (have_skill(to_skill(wheel4[get_property("parts_collector")])) == false) {
+			abort(`Missing skill {wheel4[get_property("parts_collector")]}, please set a ccs named {get_property("parts_collector")}`);
+		} else {
+			set_property("battleAction", wheel4[get_property("parts_collector")]);
+		}
+	}
+	set_property("currentMood", get_property("parts_collector"));
+	stat_check();
 }
 
 string LastAdvTxt() {
@@ -207,6 +96,11 @@ boolean tent_open(){
     if (matcher_mapnumber.find()){
     }
     return contains_text(matcher_mapnumber.group(2).to_string(), "o");
+}
+
+boolean sewer_image(){
+    string initial_sewer = visit_url("http://127.0.0.1:60080/clan_hobopolis.php");
+    return contains_text(initial_sewer, "otherimages/hobopolis/sewer1.gif");
 }
 
 string rlogs = visit_url("clan_raidlogs.php");
@@ -297,28 +191,9 @@ if (get_property("initialized") == 1 || get_property("initialized") == ""){
     if (user_confirm("You are currently in the clan "+get_clan_name()+" is the correct?") == false){
         abort();
     }
-    set_property("is_mosher", user_confirm("Are you the mosher?"));
-    set_property("parts_collection", user_prompt("What part will you be collecting?", $strings[boots,eyes,guts,skulls,crotches,skins,scarehobo,cagebot]));
-    if (get_property("parts_collection") == ""){
-        abort();
-    }
-    set_property("IveGotThis", "false");
-    set_property("adv_checked", "false");
-    set_property("people_tented" , "0");
-    set_property("people_staged" , "0");
-    set_property("moshed" , "false");
-    set_property("people_unstaged" , "0");
-    set_property("tent_stage","unstarted");
-    set_property("hpAutoRecovery",0.5);
-    set_property("hpAutoRecoveryTarget",0.95);
-    set_property("mpAutoRecovery",0.25);
-    set_property("mpAutoRecoveryTarget",0.75);
-    set_property("chatbotScriptStorage", get_property("chatbotScript"));
-    set_property("chatbotScript", "HamsterChat.ash");
-    cli_execute("/switch hobopolis");
     set_property("initialized", 4); //to skip future initializations
 } else if(get_property("initialized") == 2){
-    set_property("sewer_progress", 100); //saying that there's 100 chieftans until sewers is cleared
+    set_property("sewer_progress", 100);
 } else if(get_property("initialized") == 3){
     set_property("is_mosher", user_confirm("Are you the mosher?"));
     set_property("parts_collection", user_prompt("What part will you be collecting?", $strings[boots,eyes,guts,skulls,crotches,skins,scarehobo,cagebot]));
@@ -327,7 +202,6 @@ if (get_property("initialized") == 1 || get_property("initialized") == ""){
     }
     set_property("initialized", 4);
 }
-
 cli_execute("unequip offhand");
 
 if (my_class() == $class[seal clubber]) {
@@ -370,6 +244,26 @@ if ( contains_text( town_map , "clan_hobopolis.php?place=3") ) { //checking if s
     print ("The Maze of Sewer Tunnels is already clear, skipping sewers", "orange") ;
     set_property("initialized", 2);
 } else {
+    if (sewer_image() == true){
+            set_property("is_mosher", user_confirm("Are you the mosher?"));
+    set_property("parts_collection", user_prompt("What part will you be collecting?", $strings[boots,eyes,guts,skulls,crotches,skins,scarehobo,cagebot]));
+    if (get_property("parts_collection") == ""){
+        abort();
+    }
+    set_property("IveGotThis", "false");
+    set_property("adv_checked", "false");
+    set_property("people_staged" , "0");
+    set_property("moshed" , "false");
+    set_property("people_unstaged" , "0");
+    set_property("tent_stage","unstarted");
+    set_property("hpAutoRecovery",0.5);
+    set_property("hpAutoRecoveryTarget",0.95);
+    set_property("mpAutoRecovery",0.25);
+    set_property("mpAutoRecoveryTarget",0.75);
+    set_property("chatbotScriptStorage", get_property("chatbotScript"));
+    set_property("chatbotScript", "HamsterChat.ash");
+    cli_execute("/switch hobopolis");
+    }
     set_property("lucky_sewers", user_confirm("Select yes if you will be using clovers to fight your way through sewers, select no if you will be (mostly) cleeshing enemies and using ladders"));
     if (get_property("lucky_sewers") == "false"){
         set_property("HalfnHalf", user_confirm("Select yes if when there is 10 or less explorations left, you want to finish sewers with clovers"));
@@ -552,7 +446,7 @@ set_property("choiceAdventure225", "0"); //stopping if A Tent is encountered
 if (mapimage() <= 6) { //phase 1 collect 106 hobo parts
     start_adv = my_adventures();
     if (get_property("parts_collection") == "boots"){
-        boots_prep();
+        prep();
         int boots_left = 106 - boots();
         while (boots() < 106) {
             adventure(1, $location[Hobopolis Town Square] );
@@ -567,7 +461,7 @@ if (mapimage() <= 6) { //phase 1 collect 106 hobo parts
         }
     }
     if (get_property("parts_collection") == "eyes"){
-        eyes_prep();
+        prep();
         int eyes_left = 106 - eyes();
         while (eyes() < 106){
             adventure(1, $location[Hobopolis Town Square] );
@@ -582,7 +476,7 @@ if (mapimage() <= 6) { //phase 1 collect 106 hobo parts
         }
     }
     if (get_property("parts_collection") == "guts"){
-        guts_prep();
+        prep();
         int guts_left = 106 - guts();
         while (guts() < 106){
             adventure(1, $location[Hobopolis Town Square] );
@@ -597,7 +491,7 @@ if (mapimage() <= 6) { //phase 1 collect 106 hobo parts
         }
     }
     if (get_property("parts_collection") == "skulls"){
-        skulls_prep();
+        prep();
         int skulls_left = 106 - skulls();
         while (skulls() < 106){
             adventure(1, $location[Hobopolis Town Square] );
@@ -612,7 +506,7 @@ if (mapimage() <= 6) { //phase 1 collect 106 hobo parts
         }
     }
     if (get_property("parts_collection") == "crotches"){
-        crotches_prep();
+        prep();
         int crotches_left = 106 - crotches();
         while(crotches() < 106){
             adventure(1, $location[Hobopolis Town Square] );
@@ -627,7 +521,7 @@ if (mapimage() <= 6) { //phase 1 collect 106 hobo parts
         }
     }
     if (get_property("parts_collection") == "skins"){
-        skins_prep();
+        prep();
         int skins_left = 106 - skins();
         while (skins() < 106){
             adventure(1, $location[Hobopolis Town Square] );
@@ -703,37 +597,37 @@ if (get_property("parts_collection") == "scarehobo"){
         } else {
             repeat {
                 if ( boots() == 0){
-                    boots_prep();
+                    prep();
                     adventure(1, $location[Hobopolis Town Square] );
                     if (!contains_text(LastAdvTxt(), "Richard takes a charred hobo boots")){
                         abort ("Richard failed to get boots, look into that");
                     }
                 } else if (eyes() == 0){
-                    eyes_prep();
+                    prep();
                     adventure(1, $location[Hobopolis Town Square] );
                     if (!contains_text(LastAdvTxt(), "Richard takes a frozen hobo eyeballs")){
                         abort ("Richard failed to get eyes, look into that");
                     }
                 } else if (guts() == 0) {
-                    guts_prep();
+                    prep();
                     adventure(1, $location[Hobopolis Town Square] );
                     if (!contains_text(LastAdvTxt(), "Richard takes a stinking hobo guts")){
                         abort ("Richard failed to get guts, look into that");
                     }
                 } else if (skulls() == 0 ) {
-                    skulls_prep();
+                    prep();
                     adventure(1, $location[Hobopolis Town Square] );
                     if (!contains_text(LastAdvTxt(), "Richard takes a creepy hobo skull")){
                         abort ("Richard failed to get skull, look into that");
                     }
                 } else if (crotches() == 0 ){
-                    crotches_prep();
+                    prep();
                     adventure(1, $location[Hobopolis Town Square] );
                     if (!contains_text(LastAdvTxt(), "Richard takes a hobo crotch")){
                         abort ("Richard failed to get crotches, look into that");
                     }
                 } else if (skins() == 0 ){
-                    skins_prep();
+                    prep();
                     adventure(1, $location[Hobopolis Town Square] );
                     if (!contains_text(LastAdvTxt(), "Richard takes a hobo skin")){
                         abort ("Richard failed to get skins, look into that");
@@ -755,7 +649,7 @@ if (get_property("parts_collection") == "scarehobo"){
     if (mapimage() == 12 && get_property("tent_stage") != "stage1"){
         set_property("tent_stage","started");
         int scobo_to_use = 0;
-        if (get_property("scobo_needed") != ""){
+        if (get_property("scobo_needed") == ""){
             if ((min(11,boots())+min(11,eyes())+min(11,guts())+min(11,skulls())+min(11,crotches())+min(11,skins()))>=60){
                 scobo_to_use += 11;
                 set_property("scobo_needed","11");
@@ -776,42 +670,42 @@ if (get_property("parts_collection") == "scarehobo"){
             scobo_to_use = to_int(get_property("scobo_needed"));
         }
         while (boots() < scobo_to_use){
-            boots_prep();
+            prep();
             adventure(1, $location[Hobopolis Town Square] );
             if (!contains_text(LastAdvTxt(), "Richard takes a charred hobo boots")){
                 abort ("Richard failed to get boots, look into that");
             }
         }
         while (eyes() < scobo_to_use){
-            eyes_prep();
+            prep();
             adventure(1, $location[Hobopolis Town Square] );
             if (!contains_text(LastAdvTxt(), "Richard takes a frozen hobo eyeballs")){
                 abort ("Richard failed to get eyes, look into that");
             }
         }
         while (guts() < scobo_to_use){
-            guts_prep();
+            prep();
             adventure(1, $location[Hobopolis Town Square] );
             if (!contains_text(LastAdvTxt(), "Richard takes a stinking hobo guts")){
                 abort ("Richard failed to get guts, look into that");
             }
         }
         while (skulls() < scobo_to_use){
-            skulls_prep();
+            prep();
             adventure(1, $location[Hobopolis Town Square] );
             if (!contains_text(LastAdvTxt(), "Richard takes a stinking hobo guts")){
                 abort ("Richard failed to get guts, look into that");
             }
         }
         while (crotches() < scobo_to_use){
-            crotches_prep();
+            prep();
             adventure(1, $location[Hobopolis Town Square] );
             if (!contains_text(LastAdvTxt(), "Richard takes a hobo crotch")){
                 abort ("Richard failed to get crotches, look into that");
             }
         }
         while (skins() < scobo_to_use){
-            skins_prep();
+            prep();
             adventure(1, $location[Hobopolis Town Square] );
             if (!contains_text(LastAdvTxt(), "Richard takes a hobo skin")){
                 abort ("Richard failed to get skins, look into that");
@@ -827,37 +721,37 @@ if (get_property("parts_collection") == "scarehobo"){
     if (mapimage() == 12 && get_property("tent_stage") == "stage1"){
         while (tent_open() == false){
             if ( boots() == min(boots(), eyes(), guts(), skulls(), crotches(), skins())){
-                boots_prep();
+                prep();
                 adventure(1, $location[Hobopolis Town Square] );
                 if (!contains_text(LastAdvTxt(), "Richard takes a charred hobo boots")){
                     abort ("Richard failed to get boots, look into that");
                 }
             } else if (eyes() == min(boots(), eyes(), guts(), skulls(), crotches(), skins())){
-                eyes_prep();
+                prep();
                 adventure(1, $location[Hobopolis Town Square] );
                 if (!contains_text(LastAdvTxt(), "Richard takes a frozen hobo eyeballs")){
                     abort ("Richard failed to get eyes, look into that");
                 }
             } else if (guts() == min(boots(), eyes(), guts(), skulls(), crotches(), skins())) {
-                guts_prep();
+                prep();
                 adventure(1, $location[Hobopolis Town Square] );
                 if (!contains_text(LastAdvTxt(), "Richard takes a stinking hobo guts")){
                     abort ("Richard failed to get guts, look into that");
                 }
             } else if (skulls() == min(boots(), eyes(), guts(), skulls(), crotches(), skins()) ) {
-                skulls_prep();
+                prep();
                 adventure(1, $location[Hobopolis Town Square] );
                 if (!contains_text(LastAdvTxt(), "Richard takes a creepy hobo skull")){
                     abort ("Richard failed to get skull, look into that");
                 }
             } else if (crotches() == min(boots(), eyes(), guts(), skulls(), crotches(), skins()) ){
-                crotches_prep();
+                prep();
                 adventure(1, $location[Hobopolis Town Square] );
                 if (!contains_text(LastAdvTxt(), "Richard takes a hobo crotch")){
                     abort ("Richard failed to get crotches, look into that");
                 }
             } else if (skins() == min(boots(), eyes(), guts(), skulls(), crotches(), skins()) ){
-                skins_prep();
+                prep();
                 adventure(1, $location[Hobopolis Town Square] );
                 if (!contains_text(LastAdvTxt(), "Richard takes a hobo skin")){
                     abort ("Richard failed to get skins, look into that");
@@ -891,7 +785,7 @@ if (have_familiar($familiar[peace turkey])){
 cli_execute("maximize -combat -off-hand");
 print("Combat rate achieved: " + numeric_modifier("combat rate"));
 
-repeat{
+while (mapimage() < 25 || mapimage() == 125){
     if (tent_open() == true){
         start_adv = my_adventures();
         if (my_class() == $class[seal clubber] && get_property("is_mosher") != "true") {
@@ -942,14 +836,8 @@ repeat{
         } 
         if (TS_noncom == 225){
             cli_execute("/hobopolis tented");
-            while (to_int(get_property("people_tented")) < 7 ){
-                print("At tent, waiting until everyone is at tent", "blue");
-                print("If there is an incorrect count on the number of at tent, type \"set people_tented = #\"", "blue");
-                wait(10);
-            }
             if (get_property("is_mosher") != "true"){
                 run_choice(1);
-                cli_execute("/hobopolis staged");
                 while (get_property("moshed") != "true" ){
                     print("At tent, waiting for others to stage and mosher", "blue");
                     wait(10);
@@ -965,29 +853,31 @@ repeat{
                 }
                 run_choice(2);
                 run_choice(2);
-                cli_execute("/hobopolis moshed");
             }
+            end_adv = my_adventures();
+            adv_spent = start_adv - end_adv;
+            print(adv_spent + " adventures spend doing mosh");
+            print (num_mosh() + " mosh(es) executed", "blue");
         }
-        end_adv = my_adventures();
-        adv_spent = start_adv - end_adv;
-        print(adv_spent + " adventures spend doing mosh");
-        print (num_mosh() + " mosh(es) executed", "blue");
+    }
+    if (get_property("parts_collection") != "scarehobo"){
+        set_property("people_staged", "0");
+        set_property("moshed", "false");
     }
     if (tent_open() == false){
-        while (to_int(get_property("people_unstaged")) < 6 && get_property("moshed") == "true"){
-            print("waiting for everyone to get off stage");
-            wait (5);
-        }
-        set_property("people_tented", "0");
-        set_property("people_staged", "0");
-        set_property("people_unstaged", "0");
-        set_property("moshed", "false");
         start_adv = my_adventures();
         if (get_property("parts_collection") == "scarehobo"){
+            while (to_int(get_property("people_unstaged")) < 6 && get_property("moshed") == "true"){
+                print("waiting for everyone to get off stage, if you know everyone is offstage type \"set people_unstaged = 6\"");
+                wait (5);
+            }
+            set_property("people_staged", "0");
+            set_property("people_unstaged", "0");
+            set_property("moshed", "false");
             if (get_property("tent_stage") != "stage1"){
                 set_property("tent_stage","started");
                 int scobo_to_use = 0;
-                if (get_property("scobo_needed") != ""){
+                if (get_property("scobo_needed") == ""){
                     if (min(10,boots())+min(10,eyes())+min(10,guts())+min(10,skulls())+min(10,crotches())+min(10,skins())>=60){
                         scobo_to_use += 10;
                         set_property("scobo_needed","10");
@@ -1008,42 +898,42 @@ repeat{
                     scobo_to_use = to_int(get_property("scobo_needed"));
                 }
                 while (boots() < scobo_to_use){
-                    boots_prep();
+                    prep();
                     adventure(1, $location[Hobopolis Town Square] );
                     if (!contains_text(LastAdvTxt(), "Richard takes a charred hobo boots")){
                         abort ("Richard failed to get boots, look into that");
                     }
                 }
                 while (eyes() < scobo_to_use){
-                    eyes_prep();
+                    prep();
                     adventure(1, $location[Hobopolis Town Square] );
                     if (!contains_text(LastAdvTxt(), "Richard takes a frozen hobo eyeballs")){
                         abort ("Richard failed to get eyes, look into that");
                     }
                 }
                 while (guts() < scobo_to_use){
-                    guts_prep();
+                    prep();
                     adventure(1, $location[Hobopolis Town Square] );
                     if (!contains_text(LastAdvTxt(), "Richard takes a stinking hobo guts")){
                         abort ("Richard failed to get guts, look into that");
                     }
                 }
                 while (skulls() < scobo_to_use){
-                    skulls_prep();
+                    prep();
                     adventure(1, $location[Hobopolis Town Square] );
                     if (!contains_text(LastAdvTxt(), "Richard takes a stinking hobo guts")){
                         abort ("Richard failed to get guts, look into that");
                     }
                 }
                 while (crotches() < scobo_to_use){
-                    crotches_prep();
+                    prep();
                     adventure(1, $location[Hobopolis Town Square] );
                     if (!contains_text(LastAdvTxt(), "Richard takes a hobo crotch")){
                         abort ("Richard failed to get crotches, look into that");
                     }
                 }
                 while (skins() < scobo_to_use){
-                    skins_prep();
+                    prep();
                     adventure(1, $location[Hobopolis Town Square] );
                     if (!contains_text(LastAdvTxt(), "Richard takes a hobo skin")){
                         abort ("Richard failed to get skins, look into that");
@@ -1059,37 +949,37 @@ repeat{
             if (get_property("tent_stage") == "stage1"){
                 while (tent_open() == false){
                     if ( boots() == min(boots(), eyes(), guts(), skulls(), crotches(), skins())){
-                        boots_prep();
+                        prep();
                         adventure(1, $location[Hobopolis Town Square] );
                         if (!contains_text(LastAdvTxt(), "Richard takes a charred hobo boots")){
                             abort ("Richard failed to get boots, look into that");
                         }
                     } else if (eyes() == min(boots(), eyes(), guts(), skulls(), crotches(), skins())){
-                       eyes_prep();
+                       prep();
                         adventure(1, $location[Hobopolis Town Square] );
                         if (!contains_text(LastAdvTxt(), "Richard takes a frozen hobo eyeballs")){
                             abort ("Richard failed to get eyes, look into that");
                         }
                     } else if (guts() == min(boots(), eyes(), guts(), skulls(), crotches(), skins())) {
-                        guts_prep();
+                        prep();
                         adventure(1, $location[Hobopolis Town Square] );
                         if (!contains_text(LastAdvTxt(), "Richard takes a stinking hobo guts")){
                             abort ("Richard failed to get guts, look into that");
                         }
                     } else if (skulls() == min(boots(), eyes(), guts(), skulls(), crotches(), skins()) ) {
-                        skulls_prep();
+                        prep();
                         adventure(1, $location[Hobopolis Town Square] );
                         if (!contains_text(LastAdvTxt(), "Richard takes a creepy hobo skull")){
                             abort ("Richard failed to get skull, look into that");
                         }
                     } else if (crotches() == min(boots(), eyes(), guts(), skulls(), crotches(), skins()) ){
-                        crotches_prep();
+                        prep();
                         adventure(1, $location[Hobopolis Town Square] );
                         if (!contains_text(LastAdvTxt(), "Richard takes a hobo crotch")){
                             abort ("Richard failed to get crotches, look into that");
                         }
                     } else if (skins() == min(boots(), eyes(), guts(), skulls(), crotches(), skins()) ){
-                        skins_prep();
+                        prep();
                         adventure(1, $location[Hobopolis Town Square] );
                         if (!contains_text(LastAdvTxt(), "Richard takes a hobo skin")){
                             abort ("Richard failed to get skins, look into that");
@@ -1117,11 +1007,13 @@ repeat{
             }
         }
     }
-} until (mapimage() >= 25);
+} 
 
-if (get_property("initialized") != "1"){
+if (mapimage() == 25 || mapimage() == 26){
     set_property("initialized" ,"1");
     set_property("chatbotScript", get_property("chatbotScriptStorage"));
     set_property("battleAction", "custom combat script");
     set_property("currentMood", "apathetic");
+} else {
+    abort("Uh oh, there was a (hopefully) one time bug, please rerun hamster");
 }
