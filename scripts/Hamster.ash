@@ -1,3 +1,4 @@
+boolean[string] PARTS = $strings[boots,eyes,guts,skulls,crotches,skins,scarehobo,cagebot];
 int estimated_spelldmg = 0;
 float spelldmgp_value = 0;
 
@@ -101,65 +102,27 @@ int num_mosh() {
 	return mosh_num;
 }
 
-string richard = visit_url("clan_hobopolis.php?place=3&action=talkrichard&whichtalk=3");
-int boots() {
-	richard = visit_url("clan_hobopolis.php?place=3&action=talkrichard&whichtalk=3");
-	int boots_count = 0;
-	matcher matcher_boots = create_matcher("Richard has <b>(\\d+)</b> pair(s)? of charred hobo boot(s)?", richard);
-	if (matcher_boots.find()) {
-		boots_count += matcher_boots.group(1).to_int();
+int richard(string part) {
+	string[string] match_strings = {
+		"skins": "Richard has <b>(\\d+)</b> hobo skin(s)"
+		"boots": "Richard has <b>(\\d+)</b> pair(s)? of charred hobo boot(s)?",
+		"skulls": "Richard has <b>(\\d+)</b> creepy hobo skull(s)?",
+		"eyes": "Richard has <b>(\\d+)</b> pair(s)? of frozen hobo eyes?",
+		"crotches": "Richard has <b>(\\d+)</b> hobo crotch(es)?",
+		"guts": "Richard has <b>(\\d+)</b> pile(s)? of stinking hobo guts",
+	};
+	if (!(matchers contains part))
+		abort(`richard has no count of {part}s`);
+	string richard = visit_url("clan_hobopolis.php?place=3&action=talkrichard&whichtalk=3");
+	int part_count = 0;
+	matcher m = create_matcher(match_strings[part], richard);
+	if (m.find()) {
+		part_count += m.group(1).to_int();
 	}
-	return boots_count;
+	return part_count;
 }
-int eyes() {
-	richard = visit_url("clan_hobopolis.php?place=3&action=talkrichard&whichtalk=3");
-	int eyes_count= 0;
-	matcher matcher_eyes = create_matcher("Richard has <b>(\\d+)</b> pair(s)? of frozen hobo eyes?", richard);
-	if (matcher_eyes.find()) {
-		eyes_count += matcher_eyes.group(1).to_int();
-	}
-	return eyes_count;
-}
-int guts() {
-	richard = visit_url("clan_hobopolis.php?place=3&action=talkrichard&whichtalk=3");
-	int guts_count = 0;
-	matcher matcher_guts = create_matcher("Richard has <b>(\\d+)</b> pile(s)? of stinking hobo guts", richard);
-	if (matcher_guts.find()) {
-		guts_count += matcher_guts.group(1).to_int();
-	}
-	return guts_count;
-}
-int skulls() {
-	richard = visit_url("clan_hobopolis.php?place=3&action=talkrichard&whichtalk=3");
-	int skulls_count = 0;
-	matcher matcher_skulls = create_matcher("Richard has <b>(\\d+)</b> creepy hobo skull(s)?", richard);
-	if (matcher_skulls.find()) {
-		skulls_count += matcher_skulls.group(1).to_int();
-	}
-	return skulls_count;
-}
-int crotches() {
-	richard = visit_url("clan_hobopolis.php?place=3&action=talkrichard&whichtalk=3");
-	int crotches_count = 0;
-	matcher matcher_crotches = create_matcher("Richard has <b>(\\d+)</b> hobo crotch(es)?", richard);
-	if (matcher_crotches.find()) {
-		crotches_count += matcher_crotches.group(1).to_int();
-	}
-	return crotches_count;
-}
-int skins () {
-	richard = visit_url("clan_hobopolis.php?place=3&action=talkrichard&whichtalk=3");
-	int skins_count = 0;
-	matcher matcher_skins = create_matcher("Richard has <b>(\\d+)</b> hobo skin(s)", richard);
-	if (matcher_skins.find()) {
-		skins_count += matcher_skins.group(1).to_int();
-	}
-	return skins_count;
-}
-
 
 void setup() {
-	boolean[string] PARTS = $strings[boots,eyes,guts,skulls,crotches,skins,scarehobo,cagebot];
 	buffer ccs = "if hasskill Spring Away \n skill spring away \n endif \n if hasskill Blow the Green Candle! \n skill Blow the Green Candle \n endif \n if hasskill creepy grin \n skill screepy grin \n endif \n if hasskill feel hatred \n skill feel hatred \n endif \n if hasskill Give Your Opponent the Stinkeye \n skill Give Your Opponent the Stinkeye \n endif \n if hasskill Summon Mayfly Swarm \n skill summon mayfly swarm \n endif \n if hasskill Throw Latte on Opponent \n skill throw latte on opponent \n endif \n if hasskill Snokebomb \n skill snokebomb \n endif \n skill cleesh \n attack with weapon";
 	write_ccs(ccs, "cleesh free runaway");
 	set_property("battleAction", "custom combat script");
@@ -395,126 +358,59 @@ void main() {
 
 	if (mapimage() <= 6) { //phase 1 collect 106 hobo parts
 		start_adv = my_adventures();
-		if (get_property("parts_collection") == "boots") {
-			boots_prep();
-			int boots_left = 106 - boots();
-			while (boots() < 106) {
+		if ($strings[skins,boots,skulls,eyes,crotches,guts] contains get_property("parts_collection")) {
+			prep();
+			int parts_left = 106 - richard("boots");
+			while (richard("boots") < 106) {
 				adventure(1, $location[Hobopolis Town Square]);
-				if (get_property("_lastCombatLost") == "true"){ //KoL Mafia detected that the last combat was lost so that the script is aborted and a whole bunch of adventures aren't wasted
+				if (get_property("_lastCombatLost") == "true") //KoL Mafia detected that the last combat was lost so that the script is aborted and a whole bunch of adventures aren't wasted
 					abort ("It appears you lost the last combat, look into that");
-				}
-				if (!contains_text(LastAdvTxt(), "Richard takes a charred hobo boots")) {
-					abort ("Richard failed to get boots, look into that");
-				}
-				boots_left = 106 - boots();
-				print ("Boots left to collect: " + boots_left);
+				string[string] rich_takes = {
+					"skins": "Richard takes a hobo skin",
+					"boots": "Richard takes a charred hobo boots",
+					"skulls": "Richard takes a creepy hobo skull",
+					"eyes": "Richard takes a frozen hobo eyeballs",
+					"crotches": "Richard takes a hobo crotch",
+					"guts": "Richard takes a stinking hobo guts"
+				};
+				if (!LastAdvTxt().contains_text(rich_takes(get_property("parts_collection"))))
+					abort(rich_takes(get_property("parts_collection")).replace_all("takes", "failed to take"));
+				parts_left = 106 - richard("boots");
+				print ("Boots left to collect: " + parts_left);
 			}
 		}
-		if (get_property("parts_collection") == "eyes") {
-			eyes_prep();
-			int eyes_left = 106 - eyes();
-			while (eyes() < 106) {
-				adventure(1, $location[Hobopolis Town Square]);
-				if (get_property("_lastCombatLost") == "true"){ //KoL Mafia detected that the last combat was lost so that the script is aborted and a whole bunch of adventures aren't wasted
-					abort ("It appears you lost the last combat, look into that");
-				}
-				if (!contains_text(LastAdvTxt(), "Richard takes a frozen hobo eyeballs")) {
-					abort ("Richard failed to get eyes, look into that");
-				}
-				eyes_left = 106 - eyes();
-				print ("eyes left to collect: " + eyes_left);
-			}
-		}
-		if (get_property("parts_collection") == "guts") {
-			guts_prep();
-			int guts_left = 106 - guts();
-			while (guts() < 106) {
-				adventure(1, $location[Hobopolis Town Square]);
-				if (get_property("_lastCombatLost") == "true"){ //KoL Mafia detected that the last combat was lost so that the script is aborted and a whole bunch of adventures aren't wasted
-					abort ("It appears you lost the last combat, look into that");
-				}
-				if (!contains_text(LastAdvTxt(), "Richard takes a stinking hobo guts")) {
-					abort ("Richard failed to get guts, look into that");
-				}
-				guts_left = 106 - guts();
-				print ("guts left to collect: " + guts_left);
-			}
-		}
-		if (get_property("parts_collection") == "skulls") {
-			skulls_prep();
-			int skulls_left = 106 - skulls();
-			while (skulls() < 106) {
-				adventure(1, $location[Hobopolis Town Square]);
-				if (get_property("_lastCombatLost") == "true"){ //KoL Mafia detected that the last combat was lost so that the script is aborted and a whole bunch of adventures aren't wasted
-					abort ("It appears you lost the last combat, look into that");
-				}
-				if (!contains_text(LastAdvTxt(), "Richard takes a creepy hobo skull")) {
-					abort ("Richard failed to get skull, look into that");
-				}
-				skulls_left = 106 - skulls();
-				print ("Skulls left to collect: " + skulls_left);
-			}
-		}
-		if (get_property("parts_collection") == "crotches") {
-			crotches_prep();
-			int crotches_left = 106 - crotches();
-			while(crotches() < 106) {
-				adventure(1, $location[Hobopolis Town Square]);
-				if (get_property("_lastCombatLost") == "true"){ //KoL Mafia detected that the last combat was lost so that the script is aborted and a whole bunch of adventures aren't wasted
-					abort ("It appears you lost the last combat, look into that");
-				}
-				if (!contains_text(LastAdvTxt(), "Richard takes a hobo crotch")) {
-					abort ("Richard failed to get crotches, look into that");
-				}
-				crotches_left = 106 - crotches();
-				print ("crotches left to collect: " + crotches_left);
-			}
-		}
-		if (get_property("parts_collection") == "skins") {
-			skins_prep();
-			int skins_left = 106 - skins();
-			while (skins() < 106) {
-				adventure(1, $location[Hobopolis Town Square]);
-				if (get_property("_lastCombatLost") == "true"){ //KoL Mafia detected that the last combat was lost so that the script is aborted and a whole bunch of adventures aren't wasted
-					abort ("It appears you lost the last combat, look into that");
-				}
-				if (!contains_text(LastAdvTxt(), "Richard takes a hobo skin")) {
-					abort ("Richard failed to get skins, look into that");
-				}
-				skins_left = 106 - skins();
-				print ("skins left to collect: " + skins_left);
-			}
-		}
+
+
 		set_property("battleAction", "custom combat script");
 		set_property("currentMood", "apathetic");
-		while (boots() < 106 || eyes() < 106 || guts() < 106 || skulls() < 106 || crotches() < 106 || skins() < 106 || mapimage() <= 6) {
-			if (boots() < 106) {
-				int boots_left = 106 - boots();
+		while (richard("boots") < 106 || richard("eyes") < 106 || richard("guts") < 106 || richard("skulls") < 106 || richard("crotches") < 106 || richard("skins") < 106 || mapimage() <= 6) {
+			if (richard("boots") < 106) {
+				int boots_left = 106 - richard("boots");
 				print("Looks we are short " + boots_left + " boots");
 			}
-			if (eyes() < 106) {
-				int eyes_left = 106 - eyes();
+			if (richard("eyes") < 106) {
+				int eyes_left = 106 - richard("eyes");
 				print("Looks we are short " + eyes_left + " eyes");
 			}
-			if (guts() < 106) {
-				int guts_left = 106 - guts();
+			if (richard("guts") < 106) {
+				int guts_left = 106 - richard("guts");
 				print("Looks we are short " + guts_left + " guts");
 			}
-			if (skulls() < 106) {
-				int skulls_left = 106 - skulls();
+			if (richard("skulls") < 106) {
+				int skulls_left = 106 - richard("skulls");
 				print("Looks we are short " + skulls_left + " skulls");
 			}
-			if (crotches() < 106) {
-				int crotches_left = 106 - crotches();
+			if (richard("crotches") < 106) {
+				int crotches_left = 106 - richard("crotches");
 				print("Looks we are short " + crotches_left + " crotches");
 			}
-			if (skins() < 106) {
-				int skins_left = 106 - skins();
+			if (richard("skins") < 106) {
+				int skins_left = 106 - richard("skins");
 				print("Looks we are short " + skins_left + " skins");
 			}
 			print("Not all parts have been collected, waiting");
 			waitq(5);
-			if (boots() >= 106 && eyes() >= 106 && guts() >= 106 && skulls() >= 106 && crotches() >= 106 && skins() >= 106 && mapimage() <= 6) {
+			if (richard("boots") >= 106 && richard("eyes") >= 106 && richard("guts") >= 106 && richard("skulls") >= 106 && richard("crotches") >= 106 && richard("skins") >= 106 && mapimage() <= 6) {
 				break;
 			}
 		}
@@ -540,43 +436,43 @@ void main() {
 			visit_url("clan_hobopolis.php?preaction=simulacrum&place=3&qty="+ scobo_used);
 		}
 		while (mapimage() < 12) {
-			if (min(boots(), eyes(), guts(), skulls(), crotches(), skins()) >= 1) {
+			if (min(richard("boots"), richard("eyes"), richard("guts"), richard("skulls"), richard("crotches"), richard("skins")) >= 1) {
 				richard;
 				visit_url("clan_hobopolis.php?preaction=simulacrum&place=3&qty=1");
 				scobo_used += 1;
 			} else {
 				repeat {
-					if (boots() == 0) {
+					if (richard("boots") == 0) {
 						boots_prep();
 						adventure(1, $location[Hobopolis Town Square]);
 						if (!contains_text(LastAdvTxt(), "Richard takes a charred hobo boots")) {
 							abort ("Richard failed to get boots, look into that");
 						}
-					} else if (eyes() == 0) {
+					} else if (richard("eyes") == 0) {
 						eyes_prep();
 						adventure(1, $location[Hobopolis Town Square]);
 						if (!contains_text(LastAdvTxt(), "Richard takes a frozen hobo eyeballs")) {
 							abort ("Richard failed to get eyes, look into that");
 						}
-					} else if (guts() == 0) {
+					} else if (richard("guts") == 0) {
 						guts_prep();
 						adventure(1, $location[Hobopolis Town Square]);
 						if (!contains_text(LastAdvTxt(), "Richard takes a stinking hobo guts")) {
 							abort ("Richard failed to get guts, look into that");
 						}
-					} else if (skulls() == 0) {
+					} else if (richard("skulls") == 0) {
 						skulls_prep();
 						adventure(1, $location[Hobopolis Town Square]);
 						if (!contains_text(LastAdvTxt(), "Richard takes a creepy hobo skull")) {
 							abort ("Richard failed to get skull, look into that");
 						}
-					} else if (crotches() == 0) {
+					} else if (richard("crotches") == 0) {
 						crotches_prep();
 						adventure(1, $location[Hobopolis Town Square]);
 						if (!contains_text(LastAdvTxt(), "Richard takes a hobo crotch")) {
 							abort ("Richard failed to get crotches, look into that");
 						}
-					} else if (skins() == 0) {
+					} else if (richard("skins") == 0) {
 						skins_prep();
 						adventure(1, $location[Hobopolis Town Square]);
 						if (!contains_text(LastAdvTxt(), "Richard takes a hobo skin")) {
@@ -591,7 +487,7 @@ void main() {
 					if (mapimage() >= 12) {
 						break;
 					}
-				} until (min(boots(), eyes(), guts(), skulls(), crotches(), skins()) >= 1);
+				} until (min(richard("boots"), richard("eyes"), richard("guts"), richard("skulls"), richard("crotches"), richard("skins")) >= 1);
 			}
 		}
 		print ("Town Square image is currently at " + mapimage(), "blue");
@@ -600,16 +496,16 @@ void main() {
 			set_property("tent_stage","started");
 			int scobo_to_use = 0;
 			if (get_property("scobo_needed") != "") {
-				if ((min(11,boots())+min(11,eyes())+min(11,guts())+min(11,skulls())+min(11,crotches())+min(11,skins()))>=60) {
+				if ((min(11,richard("boots"))+min(11,richard("eyes"))+min(11,richard("guts"))+min(11,richard("skulls"))+min(11,richard("crotches"))+min(11,richard("skins")))>=60) {
 					scobo_to_use += 11;
 					set_property("scobo_needed","11");
-				} else if ((min(10,boots())+min(10,eyes())+min(10,guts())+min(10,skulls())+min(10,crotches())+min(10,skins()))>=44) {
+				} else if ((min(10,richard("boots"))+min(10,richard("eyes"))+min(10,richard("guts"))+min(10,richard("skulls"))+min(10,richard("crotches"))+min(10,richard("skins")))>=44) {
 					scobo_to_use += 10;
 					set_property("scobo_needed","10");
-				} else if ((min(9,boots())+min(9,eyes())+min(9,guts())+min(9,skulls())+min(9,crotches())+min(9,skins()))>=28) {
+				} else if ((min(9,richard("boots"))+min(9,richard("eyes"))+min(9,richard("guts"))+min(9,richard("skulls"))+min(9,richard("crotches"))+min(9,richard("skins")))>=28) {
 					scobo_to_use += 9;
 					set_property("scobo_needed","9");
-				} else if ((min(8,boots())+min(8,eyes())+min(8,guts())+min(8,skulls())+min(8,crotches())+min(8,skins()))>=12) {
+				} else if ((min(8,richard("boots"))+min(8,richard("eyes"))+min(8,richard("guts"))+min(8,richard("skulls"))+min(8,richard("crotches"))+min(8,richard("skins")))>=12) {
 					scobo_to_use += 8;
 					set_property("scobo_needed","8");
 				} else {
@@ -619,42 +515,42 @@ void main() {
 			} else {
 				scobo_to_use = to_int(get_property("scobo_needed"));
 			}
-			while (boots() < scobo_to_use) {
+			while (richard("boots") < scobo_to_use) {
 				boots_prep();
 				adventure(1, $location[Hobopolis Town Square]);
 				if (!contains_text(LastAdvTxt(), "Richard takes a charred hobo boots")) {
 					abort ("Richard failed to get boots, look into that");
 				}
 			}
-			while (eyes() < scobo_to_use) {
+			while (richard("eyes") < scobo_to_use) {
 				eyes_prep();
 				adventure(1, $location[Hobopolis Town Square]);
 				if (!contains_text(LastAdvTxt(), "Richard takes a frozen hobo eyeballs")) {
 					abort ("Richard failed to get eyes, look into that");
 				}
 			}
-			while (guts() < scobo_to_use) {
+			while (richard("guts") < scobo_to_use) {
 				guts_prep();
 				adventure(1, $location[Hobopolis Town Square]);
 				if (!contains_text(LastAdvTxt(), "Richard takes a stinking hobo guts")) {
 					abort ("Richard failed to get guts, look into that");
 				}
 			}
-			while (skulls() < scobo_to_use) {
+			while (richard("skulls") < scobo_to_use) {
 				skulls_prep();
 				adventure(1, $location[Hobopolis Town Square]);
 				if (!contains_text(LastAdvTxt(), "Richard takes a stinking hobo guts")) {
 					abort ("Richard failed to get guts, look into that");
 				}
 			}
-			while (crotches() < scobo_to_use) {
+			while (richard("crotches") < scobo_to_use) {
 				crotches_prep();
 				adventure(1, $location[Hobopolis Town Square]);
 				if (!contains_text(LastAdvTxt(), "Richard takes a hobo crotch")) {
 					abort ("Richard failed to get crotches, look into that");
 				}
 			}
-			while (skins() < scobo_to_use) {
+			while (richard("skins") < scobo_to_use) {
 				skins_prep();
 				adventure(1, $location[Hobopolis Town Square]);
 				if (!contains_text(LastAdvTxt(), "Richard takes a hobo skin")) {
@@ -670,37 +566,37 @@ void main() {
 		}
 		if (mapimage() == 12 && get_property("tent_stage") == "stage1") {
 			while (tent_open() == false) {
-				if (boots() == min(boots(), eyes(), guts(), skulls(), crotches(), skins())) {
+				if (richard("boots") == min(richard("boots"), richard("eyes"), richard("guts"), richard("skulls"), richard("crotches"), richard("skins"))) {
 					boots_prep();
 					adventure(1, $location[Hobopolis Town Square]);
 					if (!contains_text(LastAdvTxt(), "Richard takes a charred hobo boots")) {
 						abort ("Richard failed to get boots, look into that");
 					}
-				} else if (eyes() == min(boots(), eyes(), guts(), skulls(), crotches(), skins())) {
+				} else if (richard("eyes") == min(richard("boots"), richard("eyes"), richard("guts"), richard("skulls"), richard("crotches"), richard("skins"))) {
 					eyes_prep();
 					adventure(1, $location[Hobopolis Town Square]);
 					if (!contains_text(LastAdvTxt(), "Richard takes a frozen hobo eyeballs")) {
 						abort ("Richard failed to get eyes, look into that");
 					}
-				} else if (guts() == min(boots(), eyes(), guts(), skulls(), crotches(), skins())) {
+				} else if (richard("guts") == min(richard("boots"), richard("eyes"), richard("guts"), richard("skulls"), richard("crotches"), richard("skins"))) {
 					guts_prep();
 					adventure(1, $location[Hobopolis Town Square]);
 					if (!contains_text(LastAdvTxt(), "Richard takes a stinking hobo guts")) {
 						abort ("Richard failed to get guts, look into that");
 					}
-				} else if (skulls() == min(boots(), eyes(), guts(), skulls(), crotches(), skins())) {
+				} else if (richard("skulls") == min(richard("boots"), richard("eyes"), richard("guts"), richard("skulls"), richard("crotches"), richard("skins"))) {
 					skulls_prep();
 					adventure(1, $location[Hobopolis Town Square]);
 					if (!contains_text(LastAdvTxt(), "Richard takes a creepy hobo skull")) {
 						abort ("Richard failed to get skull, look into that");
 					}
-				} else if (crotches() == min(boots(), eyes(), guts(), skulls(), crotches(), skins())) {
+				} else if (richard("crotches") == min(richard("boots"), richard("eyes"), richard("guts"), richard("skulls"), richard("crotches"), richard("skins"))) {
 					crotches_prep();
 					adventure(1, $location[Hobopolis Town Square]);
 					if (!contains_text(LastAdvTxt(), "Richard takes a hobo crotch")) {
 						abort ("Richard failed to get crotches, look into that");
 					}
-				} else if (skins() == min(boots(), eyes(), guts(), skulls(), crotches(), skins())) {
+				} else if (richard("skins") == min(richard("boots"), richard("eyes"), richard("guts"), richard("skulls"), richard("crotches"), richard("skins"))) {
 					skins_prep();
 					adventure(1, $location[Hobopolis Town Square]);
 					if (!contains_text(LastAdvTxt(), "Richard takes a hobo skin")) {
@@ -832,16 +728,16 @@ void main() {
 					set_property("tent_stage","started");
 					int scobo_to_use = 0;
 					if (get_property("scobo_needed") != "") {
-						if (min(10,boots())+min(10,eyes())+min(10,guts())+min(10,skulls())+min(10,crotches())+min(10,skins())>=60) {
+						if (min(10,richard("boots"))+min(10,richard("eyes"))+min(10,richard("guts"))+min(10,richard("skulls"))+min(10,richard("crotches"))+min(10,richard("skins"))>=60) {
 							scobo_to_use += 10;
 							set_property("scobo_needed","10");
-						} else if ((min(9,boots())+min(9,eyes())+min(9,guts())+min(9,skulls())+min(9,crotches())+min(9,skins()))>=44) {
+						} else if ((min(9,richard("boots"))+min(9,richard("eyes"))+min(9,richard("guts"))+min(9,richard("skulls"))+min(9,richard("crotches"))+min(9,richard("skins")))>=44) {
 							scobo_to_use += 9;
 							set_property("scobo_needed","9");
-						} else if ((min(8,boots())+min(8,eyes())+min(8,guts())+min(8,skulls())+min(8,crotches())+min(8,skins()))>=28) {
+						} else if ((min(8,richard("boots"))+min(8,richard("eyes"))+min(8,richard("guts"))+min(8,richard("skulls"))+min(8,richard("crotches"))+min(8,richard("skins")))>=28) {
 							scobo_to_use += 8;
 							set_property("scobo_needed","8");
-						} else if ((min(7,boots())+min(7,eyes())+min(7,guts())+min(7,skulls())+min(7,crotches())+min(7,skins()))>=12) {
+						} else if ((min(7,richard("boots"))+min(7,richard("eyes"))+min(7,richard("guts"))+min(7,richard("skulls"))+min(7,richard("crotches"))+min(7,richard("skins")))>=12) {
 							scobo_to_use += 7;
 							set_property("scobo_needed","7");
 						} else {
@@ -851,42 +747,42 @@ void main() {
 					} else {
 						scobo_to_use = to_int(get_property("scobo_needed"));
 					}
-					while (boots() < scobo_to_use) {
+					while (richard("boots") < scobo_to_use) {
 						boots_prep();
 						adventure(1, $location[Hobopolis Town Square]);
 						if (!contains_text(LastAdvTxt(), "Richard takes a charred hobo boots")) {
 							abort ("Richard failed to get boots, look into that");
 						}
 					}
-					while (eyes() < scobo_to_use) {
+					while (richard("eyes") < scobo_to_use) {
 						eyes_prep();
 						adventure(1, $location[Hobopolis Town Square]);
 						if (!contains_text(LastAdvTxt(), "Richard takes a frozen hobo eyeballs")) {
 							abort ("Richard failed to get eyes, look into that");
 						}
 					}
-					while (guts() < scobo_to_use) {
+					while (richard("guts") < scobo_to_use) {
 						guts_prep();
 						adventure(1, $location[Hobopolis Town Square]);
 						if (!contains_text(LastAdvTxt(), "Richard takes a stinking hobo guts")) {
 							abort ("Richard failed to get guts, look into that");
 						}
 					}
-					while (skulls() < scobo_to_use) {
+					while (richard("skulls") < scobo_to_use) {
 						skulls_prep();
 						adventure(1, $location[Hobopolis Town Square]);
 						if (!contains_text(LastAdvTxt(), "Richard takes a stinking hobo guts")) {
 							abort ("Richard failed to get guts, look into that");
 						}
 					}
-					while (crotches() < scobo_to_use) {
+					while (richard("crotches") < scobo_to_use) {
 						crotches_prep();
 						adventure(1, $location[Hobopolis Town Square]);
 						if (!contains_text(LastAdvTxt(), "Richard takes a hobo crotch")) {
 							abort ("Richard failed to get crotches, look into that");
 						}
 					}
-					while (skins() < scobo_to_use) {
+					while (richard("skins") < scobo_to_use) {
 						skins_prep();
 						adventure(1, $location[Hobopolis Town Square]);
 						if (!contains_text(LastAdvTxt(), "Richard takes a hobo skin")) {
@@ -902,37 +798,37 @@ void main() {
 				}
 				if (get_property("tent_stage") == "stage1") {
 					while (tent_open() == false) {
-						if (boots() == min(boots(), eyes(), guts(), skulls(), crotches(), skins())) {
+						if (richard("boots") == min(richard("boots"), richard("eyes"), richard("guts"), richard("skulls"), richard("crotches"), richard("skins"))) {
 							boots_prep();
 							adventure(1, $location[Hobopolis Town Square]);
 							if (!contains_text(LastAdvTxt(), "Richard takes a charred hobo boots")) {
 								abort ("Richard failed to get boots, look into that");
 							}
-						} else if (eyes() == min(boots(), eyes(), guts(), skulls(), crotches(), skins())) {
+						} else if (richard("eyes") == min(richard("boots"), richard("eyes"), richard("guts"), richard("skulls"), richard("crotches"), richard("skins"))) {
 						eyes_prep();
 							adventure(1, $location[Hobopolis Town Square]);
 							if (!contains_text(LastAdvTxt(), "Richard takes a frozen hobo eyeballs")) {
 								abort ("Richard failed to get eyes, look into that");
 							}
-						} else if (guts() == min(boots(), eyes(), guts(), skulls(), crotches(), skins())) {
+						} else if (richard("guts") == min(richard("boots"), richard("eyes"), richard("guts"), richard("skulls"), richard("crotches"), richard("skins"))) {
 							guts_prep();
 							adventure(1, $location[Hobopolis Town Square]);
 							if (!contains_text(LastAdvTxt(), "Richard takes a stinking hobo guts")) {
 								abort ("Richard failed to get guts, look into that");
 							}
-						} else if (skulls() == min(boots(), eyes(), guts(), skulls(), crotches(), skins())) {
+						} else if (richard("skulls") == min(richard("boots"), richard("eyes"), richard("guts"), richard("skulls"), richard("crotches"), richard("skins"))) {
 							skulls_prep();
 							adventure(1, $location[Hobopolis Town Square]);
 							if (!contains_text(LastAdvTxt(), "Richard takes a creepy hobo skull")) {
 								abort ("Richard failed to get skull, look into that");
 							}
-						} else if (crotches() == min(boots(), eyes(), guts(), skulls(), crotches(), skins())) {
+						} else if (richard("crotches") == min(richard("boots"), richard("eyes"), richard("guts"), richard("skulls"), richard("crotches"), richard("skins"))) {
 							crotches_prep();
 							adventure(1, $location[Hobopolis Town Square]);
 							if (!contains_text(LastAdvTxt(), "Richard takes a hobo crotch")) {
 								abort ("Richard failed to get crotches, look into that");
 							}
-						} else if (skins() == min(boots(), eyes(), guts(), skulls(), crotches(), skins())) {
+						} else if (richard("skins") == min(richard("boots"), richard("eyes"), richard("guts"), richard("skulls"), richard("crotches"), richard("skins"))) {
 							skins_prep();
 							adventure(1, $location[Hobopolis Town Square]);
 							if (!contains_text(LastAdvTxt(), "Richard takes a hobo skin")) {
@@ -941,9 +837,9 @@ void main() {
 						}
 						set_property("battleAction", "custom combat script");
 						set_property("currentMood", "boots");
-						if (num_mosh() >= 8 && min(boots(), eyes(), guts(), skulls(), crotches(), skins()) >= 1) {
+						if (num_mosh() >= 8 && min(richard("boots"), richard("eyes"), richard("guts"), richard("skulls"), richard("crotches"), richard("skins")) >= 1) {
 							richard;
-							visit_url("clan_hobopolis.php?preaction=simulacrum&place=3&qty="+ min(boots(), eyes(), guts(), skulls(), crotches(), skins()));
+							visit_url("clan_hobopolis.php?preaction=simulacrum&place=3&qty="+ min(richard("boots"), richard("eyes"), richard("guts"), richard("skulls"), richard("crotches"), richard("skins")));
 						}
 						if (get_property("_lastCombatLost") == "true"){ //KoL Mafia detected that the last combat was lost so that the script is aborted and a whole bunch of adventures aren't wasted
 							abort ("It appears you lost the last combat, look into that");
