@@ -298,7 +298,7 @@ if (get_property("initialized") == 1 || get_property("initialized") == ""){
         abort();
     }
     set_property("is_mosher", user_confirm("Are you the mosher?"));
-    set_property("parts_collection", user_prompt("What part will you be collecting?", string[string]{"1. Boots":"boots", "2. Eyes":"eyes", "3. Guts":"guts", "4. Skulls":"skulls", "5. Crotches":"crotches", "6. Skins":"skins", "7. Scarehobo":"scarehobo", "8. Cagebot":"cagebot"}));
+    set_property("parts_collection", user_prompt("What part will you be collecting?", $strings[boots,eyes,guts,skulls,crotches,skins,scarehobo,cagebot]));
     if (get_property("parts_collection") == ""){
         abort();
     }
@@ -321,7 +321,7 @@ if (get_property("initialized") == 1 || get_property("initialized") == ""){
     set_property("sewer_progress", 100); //saying that there's 100 chieftans until sewers is cleared
 } else if(get_property("initialized") == 3){
     set_property("is_mosher", user_confirm("Are you the mosher?"));
-    set_property("parts_collection", user_prompt("What part will you be collecting?", string[string]{"1. Boots":"boots", "2. Eyes":"eyes", "3. Guts":"guts", "4. Skulls":"skulls", "5. Crotches":"crotches", "6. Skins":"skins", "7. Scarehobo":"scarehobo", "8. Cagebot":"cagebot"}));
+    set_property("parts_collection", user_prompt("What part will you be collecting?", $strings[boots,eyes,guts,skulls,crotches,skins,scarehobo,cagebot]));
     if (get_property("parts_collection") == ""){
         abort();
     }
@@ -643,7 +643,7 @@ if (mapimage() <= 6) { //phase 1 collect 106 hobo parts
     }
     set_property("battleAction", "custom combat script");
     set_property("currentMood", "apathetic");
-    while (boots() < 106 && eyes() < 106 && guts() < 106 && skulls() < 106 && crotches() < 106 && skins() < 106 && mapimage() <= 6){
+    while (boots() < 106 || eyes() < 106 || guts() < 106 || skulls() < 106 || crotches() < 106 || skins() < 106 || mapimage() <= 6){
         if (boots() < 106){
             int boots_left = 106 - boots();
             print("Looks we are short " + boots_left + " boots");
@@ -678,6 +678,8 @@ if (mapimage() <= 6) { //phase 1 collect 106 hobo parts
     adv_spent = start_adv - end_adv;
     print(adv_spent + " adventures spend collecting parts");
 }
+
+print(mapimage() + boots() + eyes() + skulls() + );
 
 if (get_property("parts_collection") == "scarehobo"){
     int scobo_used = 0;
