@@ -974,7 +974,7 @@ repeat{
         print (num_mosh() + " mosh(es) executed", "blue");
     }
     if (tent_open() == false){
-        while (to_int(get_property("people_unstaged")) < 6 && get_property("people_unstaged") = "true"){
+        while (to_int(get_property("people_unstaged")) < 6 && get_property("moshed") == "true"){
             print("waiting for everyone to get off stage");
             wait (5);
         }
