@@ -2,7 +2,7 @@
 
 A Kingdom of Loathing script that is intended to be a low set up script for getting the Hamster from Hodgman. This is mostly original with some inspiration from Grotfang's Hands Free Hamster script. I've also yoinked some lines from a hobopolis script that I can't find anymore and a Forums of Loathing post.
 
-Be wary that this only works in theory, I've tested what I could, but I haven't been able to do a test run, not enough interest in my clan TT.
+This script looks so different from where it start such that I only came up with the concept and DamianDominoDavis actually wrote the script, thanks! At this point 75% of the credit goes to them and once this script is polished, his fork should probably be the main one.
 
 ## Installation
 To install this script in KolMafia, simply use the following command in the gCLI:

@@ -135,7 +135,6 @@ void setup() {
 				abort();
 			set_property("IveGotThis", "false");
 			set_property("adv_checked", "false");
-			set_property("people_tented" , "0");
 			set_property("people_staged" , "0");
 			set_property("moshed" , "false");
 			set_property("people_unstaged" , "0");
@@ -449,7 +448,7 @@ void phase_two() {
 	if (mapimage() == 12 && get_property("tent_stage") != "stage1") {
 		set_property("tent_stage", "started");
 		int scobo_to_use = 0;
-		if (get_property("scobo_needed") != "")
+		if (get_property("scobo_needed") == "")
 			foreach n, needed in int[int]{11:60, 10:44, 9:28, 8:12, 7:0} {
 				int total = 0;
 				foreach part in roles
@@ -526,15 +525,8 @@ void phase_three() {
 				run_choice(2);
 			} 
 			if (TS_noncom == 225) {
-				cli_execute("/hobopolis tented");
-				while (to_int(get_property("people_tented")) < 7) { // walk through the chatbot doing this
-					print("At tent, waiting until everyone is at tent", "blue");
-					print("If there is an incorrect count on the number of at tent, type \"set people_tented = #\"", "blue");
-					waitq(10);
-				}
 				if (get_property("is_mosher") != "true") {
 					run_choice(1);
-					cli_execute("/hobopolis staged");
 					while (get_property("moshed") != "true") {
 						print("At tent, waiting for others to stage and mosher", "blue");
 						waitq(10);
@@ -563,16 +555,16 @@ void phase_three() {
 				print("waiting for everyone to get off stage");
 				waitq(5);
 			}
-			set_property("people_tented", "0");
-			set_property("people_staged", "0");
-			set_property("people_unstaged", "0");
-			set_property("moshed", "false");
+			if (get_property("parts_collection") != "scarehobo"){
+				set_property("people_staged", "0");
+				set_property("moshed", "false");
+			}
 			start_adv = my_adventures();
 			if (get_property("parts_collection") == "scarehobo") {
 				if (get_property("tent_stage") != "stage1") {
 					set_property("tent_stage", "started");
 					int scobo_to_use = 0;
-					if (get_property("scobo_needed") != "")
+					if (get_property("scobo_needed") == "")
 						foreach n, needed in int[int]{10:60, 9:44, 8:28, 7:12, 6:0} { // keys 1 less than last time
 							int total = 0;
 							foreach part in roles
@@ -602,6 +594,7 @@ void phase_three() {
 					set_property("tent_stage", "stage1");
 				}
 				if (get_property("tent_stage") == "stage1") {
+					cli_execute("/switch hobopolis");
 					while (!tent_open()) {
 						if (richard("boots") == min(richard("boots"), richard("eyes"), richard("guts"), richard("skulls"), richard("crotches"), richard("skins"))) {
 							prep();
@@ -661,7 +654,7 @@ void phase_three() {
 				}
 			}
 		}
-	} until (mapimage() >= 25);
+	} until (mapimage() >= 25 && mapimage() != 125);
 }
 
 void main() {
@@ -670,7 +663,7 @@ void main() {
 	phase_one();
 	phase_two();
 	phase_three();
-	if (get_property("initialized") != "1") {
+	if (mapimage() == 25 || mapimage() == 26) {
 		set_property("initialized" ,"1");
 		set_property("chatbotScript", get_property("chatbotScriptStorage"));
 		set_property("battleAction", "custom combat script");
